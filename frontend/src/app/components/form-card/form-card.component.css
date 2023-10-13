@@ -1,0 +1,26 @@
+.my-input{
+    border: none;
+    border-radius: 0px;
+    resize: none;
+    border-bottom: 1px solid ;
+}
+
+span.done{
+    border: 1px solid #1757c4;
+    background-color: rgb(170, 170, 170, 0.1);
+    border-radius: 17px;
+    padding: 4px 10px;
+    color: #1757c4;
+    cursor: pointer;
+    /* font-weight: bold; */
+}
+
+span.done:hover{
+    transform: scale(1.03);
+    background-color: #1757c4;
+    color: white;
+}
+
+.card{
+    border-left: 0.25rem solid #1757c4;
+}

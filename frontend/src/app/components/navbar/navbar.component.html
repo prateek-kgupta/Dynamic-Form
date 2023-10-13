@@ -1,0 +1,31 @@
+<nav class="navbar navbar-expand-md bg-body-tertiary border-bottom bg-primary fixed-top" data-bs-theme="dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="/">Navbar scroll</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
+      aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarScroll">
+      <form class="d-flex m-auto" role="search">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+      <ul class="navbar-nav my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+        <li class="nav-item mx-2">
+          <a class="nav-link" routerLinkActive="active" routerLink="/create"
+            [routerLinkActiveOptions]="{exact: true}">New Form</a>
+        </li>
+        <li class="nav-item mx-2">
+          <a class="nav-link" routerLinkActive="active" routerLink="form" [routerLinkActiveOptions]="{exact: true}">My
+            forms</a>
+        </li>
+        <li class="nav-item ">
+          <!-- <span class="btn btn-secondary ms-2">Login</span> -->
+          <button class="btn btn-outline-secondary ms-3" aria-current="page" (click)="changeLog()">{{token? 'Log Out':
+            'Login'}}</button>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+</nav>

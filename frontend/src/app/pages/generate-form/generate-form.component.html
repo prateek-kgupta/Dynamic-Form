@@ -1,0 +1,14 @@
+<div class="card py-3 px-5 mb-4">
+    <input type="text" class="h1 mb-0" style="outline: none;" [(ngModel)]="formTitle"/>
+</div>
+<form [formGroup]="generateForm" (ngSubmit)="onSubmit()">
+    <div formArrayName="fields">
+        <ng-container *ngFor="let iterator of generateForm.get('fields')['controls']; index as i">
+            <app-form-card (fieldDetails)="createControls($event, i)" (removeField)="deleteField( i)"></app-form-card>
+        </ng-container>
+    </div>
+    <button type="button" class="btn btn-outline-primary w-25 me-2" (click)="addField()">
+        <i class="fa-solid fa-plus me-2"></i>Add new field
+    </button>
+    <button class="btn btn-outline-success w-25 ms-2">Submit</button>
+</form>

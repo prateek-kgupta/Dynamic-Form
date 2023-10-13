@@ -1,0 +1,32 @@
+<div class="card py-3 px-5 mb-4">
+    <h1 class="mb-0">{{formTitle}}</h1>
+</div>
+
+<div class="card py-3 px-5 my-2" *ngFor="let field of formToResponse, index as i">
+    <h3 class="fw-bold">{{field.ques}}<span class="text-danger" *ngIf="field.isRequired"> *</span></h3>
+
+    <!-- text/number -->
+    <ng-container *ngIf="field.type === 'text' || field.type === 'number'">
+        <input disabled class="form-control" [type]="field.type" placeholder="Your answer here..."
+            [value]="responseData[i]['response'][0]">
+    </ng-container>
+    <!-- Radio -->
+    <div *ngIf="field.type === 'radio'">
+        <label class="form-check-label ms-4" *ngFor="let option of field.options; let j = index">
+            <input disabled type="radio" class="form-check-input" [checked]="option === responseData[i]['response'][0]"> {{ option }}
+        </label>
+    </div>
+    <!-- Checkbox -->
+    <div *ngIf="field.type === 'checkbox'">
+        <label class="form-check-label ms-4" *ngFor="let option of field.options; let j = index">
+            <input disabled type="checkbox" class="form-check-input"
+                [checked]="responseData[i]['response'][j] === 'true'"> {{ option }}
+        </label>
+    </div>
+    <!-- Dropdown -->
+    <ng-container *ngIf="field.type === 'dropdown'">
+        <select class="form-select" [value]="responseData[i]['response'][0]" disabled>
+            <option *ngFor="let option of field.options" [value]="option">{{option}}</option>
+        </select>
+    </ng-container>
+</div>

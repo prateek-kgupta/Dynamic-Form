@@ -1,0 +1,45 @@
+<div class="auth">
+    <ng-container *ngIf="login">
+        <h1>Login</h1>
+        <ng-container [formGroup]="loginForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" formControlName="email" placeholder="Email">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" formControlName="password"
+                    placeholder="Password">
+            </div>
+        </ng-container>
+        <button class="btn btn-success" (click)="loginSubmit()">Login</button>
+        <p>Not a user? <a class="link-opacity-100 " (click)="toggle()">Sign Up</a></p>
+    </ng-container>
+    <ng-container *ngIf="!login">
+        <h1>Sign Up</h1>
+        <ng-container [formGroup]="signupForm">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" id="name" formControlName="name" placeholder="Name">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" formControlName="email" placeholder="Email">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" formControlName="password"
+                    placeholder="Password">
+            </div>
+            <div class="form-group">
+                <label for="password">Re-type Password</label>
+                <input type="password" class="form-control" id="rePass" formControlName="rePass"
+                    placeholder="Re-type Password">
+            </div>
+        </ng-container>
+        <button class="btn btn-success" (click)="signupSubmit()">Sign Up</button>
+        <p>Already Registered? <a class="link-opacity-100 " (click)="toggle()">Login</a></p>
+    </ng-container>
+
+</div>

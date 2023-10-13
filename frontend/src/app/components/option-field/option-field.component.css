@@ -1,0 +1,38 @@
+.my-input {
+  width: 60%;
+  border: none;
+  border-bottom: 1px solid;
+  border-radius: 0;
+}
+li {
+  width: 60%;
+}
+.my-option {
+  border: none;
+  border-bottom: 1px solid;
+  border-radius: 0;
+}
+
+.input-group-text {
+  background-color: transparent;
+  border: none;
+}
+
+.addButton {
+  position: absolute;
+  right: -2.3rem;
+  /* background: transparent; */
+  border: none;
+}
+
+ul.checkbox {
+  list-style: square;
+}
+
+ul.radio {
+  list-style: circle;
+}
+
+ul li::marker {
+  font-size: 1.5rem;
+}

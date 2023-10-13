@@ -1,0 +1,32 @@
+<div class="my-4" [ngSwitch]="types">
+    <input type="text" class="my-input form-control" *ngSwitchCase="'text'" placeholder="Text inputs..." disabled>
+    <input type="number" class="my-input form-control" *ngSwitchCase="'number'" placeholder="Number inputs..." disabled>
+    <ol *ngSwitchCase="'dropdown'">
+        <ng-container *ngTemplateOutlet="listItemTemplate"></ng-container>
+    </ol>
+    <ul *ngSwitchCase="'checkbox'" class="checkbox">
+        <ng-container *ngTemplateOutlet="listItemTemplate"></ng-container>
+    </ul>
+    <ul *ngSwitchCase="'radio'" class="radio">
+        <ng-container *ngTemplateOutlet="listItemTemplate"></ng-container>
+    </ul>
+</div>
+
+
+
+<ng-template #listItemTemplate>
+    <li *ngFor="let option of options; let index = index">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="input-group mb-3 position-relative">
+                <input type="text" class="my-option form-control" [value]="option"
+                    (blur)="updateValue(index, $event)"/>
+                <span *ngIf="options.length > 1" class="input-group-text" id="basic-addon2">
+                    <i class="fa-solid fa-xmark fa-xl" style="color: #860404;"
+                        (mousedown)="removeOption(index)"></i></span>
+                <button class="btn addButton" *ngIf="index === options.length - 1" (mousedown)="addOption()">
+                    <i class="fa-solid fa-plus fa-xl" style="color: #1757c4;"></i>
+                </button>
+            </div>
+        </div>
+    </li>
+</ng-template>
