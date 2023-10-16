@@ -18,16 +18,14 @@ export class NavbarComponent {
 
   ngOnInit() {
     this.token = this.cookieService.get('token');
-    console.log(this.token)
     if (this.token) {
       const payload = JSON.parse(atob(this.token.split('.')[1]));
       // set values to user-info service
       this.user.token = this.token;
+      this.user.loggedIn = true;
       this.user['_id'] = payload._id;
       this.user['name'] = payload.name;
-      
     }
-    console.log(this.user)
   }
 
   changeLog() {
@@ -38,6 +36,7 @@ export class NavbarComponent {
       this.user['_id'] = '';
       this.user['name'] = '';
       this.router.navigate(['/']);
+      this.user.loggedIn = false
       console.log(this.user)
     } else {
       this.router.navigate(['/login']);

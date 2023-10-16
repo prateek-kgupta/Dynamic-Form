@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserInfo } from 'src/app/services/user-info.service';
 
@@ -10,15 +10,16 @@ import { UserInfo } from 'src/app/services/user-info.service';
   styleUrls: ['./generate-form.component.css'],
 })
 export class GenerateFormComponent {
-  
-  formTitle: string = 'Form Name'
+  formTitle: string = 'Form Name...';
   generateForm: FormGroup = new FormGroup({
     fields: new FormArray([new FormControl(null)]),
   });
 
-  
-
-  constructor(private http: HttpClient, private user: UserInfo, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private user: UserInfo,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.generateForm = new FormGroup({
@@ -28,32 +29,40 @@ export class GenerateFormComponent {
 
   onSubmit() {
     const formData = this.generateForm.get('fields').value;
-    console.log(formData);
-    const header = new HttpHeaders().set(
-      'Authorization',
-      `Bearer ${this.user.token}`
-    );
-    this.http
-      .post(
-        'http://localhost:3000/form',
-        { form: formData, owner: this.user._id, title: this.formTitle },
-        { headers: header }
-      )
-      .subscribe( 
-        (res) => {
-          this.router.navigate([`/form/${res['_id']}`])
-
-        },
-        (err) => {
-          console.log(err);
-        }
+    console.log(formData, this.generateForm.valid);
+    if (formData.length > 0 && this.generateForm.valid) {
+      const header = new HttpHeaders().set(
+        'Authorization',
+        `Bearer ${this.user.token}`
       );
+      this.http
+        .post(
+          'http://localhost:3000/form',
+          { form: formData, owner: this.user._id, title: this.formTitle },
+          { headers: header }
+        )
+        .subscribe(
+          (res) => {
+            this.router.navigate([`/form/${res['_id']}`]);
+          },
+          (err) => {
+            console.log(err);
+          }
+        );
+    }
+    else if(formData.length === 0){
+      alert("Form must contain atleast one Question (Make sure you click 'Done' after making change)")
+    }
+    else{
+      alert("Question and type are necessary fields (Make sure you click 'Done' after making change)")
+    }
+
   }
 
   addField() {
     (<FormArray>this.generateForm.get('fields')).push(
       new FormGroup({
-        ques: new FormControl(null),
+        ques: new FormControl(null, Validators.required),
         type: new FormControl(false),
         isRequired: new FormControl(false),
         options: new FormControl(null),

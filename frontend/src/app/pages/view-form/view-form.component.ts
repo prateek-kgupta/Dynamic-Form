@@ -124,8 +124,8 @@ export class ViewFormComponent {
           }
         );
     }
-    // console.log(this.responseForm.value.fields);
-    console.log(this.responseForm);
-    console.log(this.responseForm.valid);
+    else{
+      alert("Must answer every required fields")
+    }
   }
 }

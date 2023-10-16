@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component} from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
@@ -18,7 +18,7 @@ export class AuthorizationComponent {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private cookieService: CookieService,
+    private cookieService: CookieService
   ) {}
 
   ngOnInit() {
@@ -30,8 +30,16 @@ export class AuthorizationComponent {
     this.signupForm = new FormGroup({
       name: new FormControl(null, Validators.required),
       email: new FormControl(null, [Validators.required, Validators.email]),
-      password: new FormControl(null, Validators.required),
-      rePass: new FormControl(null, Validators.required),
+      password: new FormControl(null, [
+        Validators.required,
+        Validators.minLength(7),
+        Validators.maxLength(20),
+      ]),
+      rePass: new FormControl(null, [
+        Validators.required,
+        Validators.minLength(7),
+        Validators.maxLength(20),
+      ]),
     });
   }
 
@@ -51,9 +59,12 @@ export class AuthorizationComponent {
             this.router.navigate(['/']);
           },
           (err) => {
+            alert('Invalid Credentials');
             console.log(err);
           }
         );
+    } else {
+      alert('Please provide proper details in every field');
     }
   }
 
@@ -71,13 +82,20 @@ export class AuthorizationComponent {
             this.router.navigate(['/']);
           },
           (err) => {
+            alert('Make sure email is valid or is not registered earlier');
             console.log(err);
           }
         );
 
       // Api call
     } else {
-      console.log('Each field is necessary and passwords must match');
+      if (this.signupForm['controls']['email'].invalid) {
+        alert('Please provide a valid email');
+      } else if (this.signupForm['controls']['password'].invalid) {
+        alert('Password must be 7-20 characters long');
+      } else {
+        alert('Each field is necessary and passwords must match');
+      }
     }
   }
   toggle() {

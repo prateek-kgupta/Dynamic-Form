@@ -1,1 +1,14 @@
-<p>dashboard works!</p>
+<div class="d-md-flex flex-wrap justify-content-between">
+    <div class="card mycard py-3 px-5 mb-4" *ngFor="let form of formList" (click)="openForm(form._id)">
+        <div class="row">
+            <div class="col-lg-6 d-flex align-items-center"><span class="h3">{{form.title}}</span></div>
+            <div class="col-lg-3 d-flex align-items-center justify-content-center"><span class="titles me-2">Author:
+                </span> {{form.user[0].name}}</div>
+            <div class="col-lg-3 d-flex align-items-center justify-content-center"><span class="titles me-2">
+                    Questions: </span> {{form.numberOfQues}}</div>
+        </div>
+        <div class="row mt-4">
+            <button class="btn btn-primary" [disabled]="currentUser !== form.owner" (click)="submissions($event, form._id)">Show Submissions</button>
+        </div>
+    </div>
+</div>

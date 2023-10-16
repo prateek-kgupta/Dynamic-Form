@@ -3,15 +3,15 @@ const auth = require("../middleware/auth");
 const Response = require("../models/responses");
 const mongoose = require("mongoose");
 
+const { validateResponse } = require("../middleware/validateResponse");
+
 const router = express.Router();
 router.use(auth);
 
-router.post("/", async (req, res) => {
+router.post("/", validateResponse, async (req, res) => {
   const responseData = req.body;
   responseData.responderId = req.user._id;
   const response = new Response(responseData);
-  console.log("Data to be saved:\n\n\n", response);
-  console.log(req.user);
   try {
     const result = await response.save();
     res.status(200).send(result);

@@ -1,0 +1,18 @@
+.card{
+    border-left: 0.25rem solid brown;
+}
+
+.titles{
+    font-weight: bold;
+    /* font-size: 1rem; */
+}
+
+.mycard{
+    width: 48%;
+}
+
+@media (max-width: 767.98px){
+    .mycard{
+        width: 100%;
+    }
+}

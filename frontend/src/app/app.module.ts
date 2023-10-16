@@ -15,6 +15,8 @@ import { FormCardComponent } from './components/form-card/form-card.component';
 import { OptionFieldComponent } from './components/option-field/option-field.component';
 import { UserInfo } from './services/user-info.service';
 import { ShowResponseComponent } from './pages/show-response/show-response.component';
+import { RouteGuardService } from './services/route-guard.service';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
 
 @NgModule({
   declarations: [
@@ -26,16 +28,17 @@ import { ShowResponseComponent } from './pages/show-response/show-response.compo
     NavbarComponent,
     FormCardComponent,
     OptionFieldComponent,
-    ShowResponseComponent
+    ShowResponseComponent,
+    NotFoundComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
   ],
-  providers: [CookieService, UserInfo],
-  bootstrap: [AppComponent]
+  providers: [CookieService, UserInfo, RouteGuardService],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

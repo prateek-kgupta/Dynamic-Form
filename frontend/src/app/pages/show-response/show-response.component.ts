@@ -31,8 +31,8 @@ export class ShowResponseComponent {
       this.responseData = res[0]['responses']
       this.formTitle = res[0]['forms'][0]['title']
       this.formToResponse = res[0]['forms'][0]['form']
-      console.log("response",this.responseData)
-      console.log("form", this.formToResponse)
+      // console.log("response",this.responseData)
+      // console.log("form", this.formToResponse)
     },(err) => {
       console.log(err)
     })

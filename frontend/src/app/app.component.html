@@ -1,6 +1,5 @@
-<app-navbar *ngIf="currentRoute.startsWith('/login') !== true"></app-navbar>
+<!-- <app-navbar *ngIf="currentRoute!=='/login' || currentRoute.startsWith('/login?') !== true"></app-navbar> -->
+<app-navbar *ngIf="showNav"></app-navbar>
 <div class="container main-cont">
     <router-outlet></router-outlet>
 </div>
-
-

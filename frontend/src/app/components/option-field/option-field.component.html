@@ -19,11 +19,11 @@
         <div class="d-flex align-items-center justify-content-between mb-2">
             <div class="input-group mb-3 position-relative">
                 <input type="text" class="my-option form-control" [value]="option"
-                    (blur)="updateValue(index, $event)"/>
+                    (blur)="updateValue(index, $event)" [disabled]="!ques"/>
                 <span *ngIf="options.length > 1" class="input-group-text" id="basic-addon2">
                     <i class="fa-solid fa-xmark fa-xl" style="color: #860404;"
                         (mousedown)="removeOption(index)"></i></span>
-                <button class="btn addButton" *ngIf="index === options.length - 1" (mousedown)="addOption()">
+                <button class="btn addButton" *ngIf="index === options.length - 1" (mousedown)="addOption()" [disabled]="!ques">
                     <i class="fa-solid fa-plus fa-xl" style="color: #1757c4;"></i>
                 </button>
             </div>

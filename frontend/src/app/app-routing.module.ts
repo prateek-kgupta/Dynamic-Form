@@ -6,13 +6,16 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { GenerateFormComponent } from './pages/generate-form/generate-form.component';
 import { ViewFormComponent } from './pages/view-form/view-form.component';
 import { ShowResponseComponent } from './pages/show-response/show-response.component';
+import { RouteGuardService } from './services/route-guard.service';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
 
 const routes: Routes = [
   {path: '', component: DashboardComponent},
-  {path: 'login', component: AuthorizationComponent},
-  {path: 'create', component: GenerateFormComponent},
-  {path: 'form/:formId', component: ViewFormComponent},
-  {path: 'response/:responseId', component: ShowResponseComponent}
+  {path: 'login', component: AuthorizationComponent, canActivate: [RouteGuardService]},
+  {path: 'create', component: GenerateFormComponent, canActivate: [RouteGuardService]},
+  {path: 'form/:formId', component: ViewFormComponent, canActivate: [RouteGuardService]},
+  {path: 'response/:responseId', component: ShowResponseComponent, canActivate: [RouteGuardService]},
+  {path: '**', component: NotFoundComponent}
 ];
 
 @NgModule({

@@ -8,6 +8,7 @@ import { Component, Input } from '@angular/core';
 export class OptionFieldComponent {
   @Input() types: String = 'text'
   @Input() options: String[] = []
+  @Input() ques: String = ''
 
   updateValue(index: number, e: Event){
     const element = e.target as HTMLInputElement
@@ -20,8 +21,8 @@ export class OptionFieldComponent {
   }
 
   addOption(){
-    console.log('Hello')
+    // console.log('Hello')
     this.options.push('Option')
-    console.log("add:\n",this.options)
+    // console.log("add:\n",this.options)
   }
 }

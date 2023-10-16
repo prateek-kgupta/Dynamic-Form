@@ -1,6 +1,7 @@
-export class UserInfo{
-    routeInfo: string = ''
-    token: string = ''
-    _id: string = ''
-    name: string = ''
+export class UserInfo {
+  routeInfo: string = '';
+  token: string = '';
+  loggedIn: boolean = false;
+  _id: string = '';
+  name: string = '';
 }

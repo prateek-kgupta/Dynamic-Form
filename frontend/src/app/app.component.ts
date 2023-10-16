@@ -9,12 +9,22 @@ import { UserInfo } from './services/user-info.service';
 })
 export class AppComponent {
   currentRoute: string = '';
+  showNav: boolean = true
 
   constructor(private router: Router, private user: UserInfo) {
 
     router.events.subscribe((event: Event) => {
       if(event instanceof NavigationEnd){
         this.currentRoute = event.url
+        if(this.currentRoute === '/login'){
+          this.showNav = false
+        }
+        else if(this.currentRoute.startsWith('/login?')){
+          this.showNav = false
+        }
+        else{
+          this.showNav = true
+        }
         this.user.routeInfo = this.currentRoute
       }
     })

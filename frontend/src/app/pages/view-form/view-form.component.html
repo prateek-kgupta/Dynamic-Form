@@ -16,14 +16,17 @@
                 </ng-container>
                 <!-- Radio -->
                 <div *ngIf="field.type === 'radio'">
-                    <ng-container *ngFor="let option of field.options">
+                    <label class="form-check-label ms-4" *ngFor="let option of field.options; let j = index">
+                        <input type="radio" class="form-check-input" [value]="option" formControlName="0"> {{ option }}
+                    </label>
+                    <!-- <ng-container *ngFor="let option of field.options">
                         <input class="form-check-input" type="radio" [value]="option" formControlName="0" />
                         <label class="form-check-label ms-4">{{option}}</label>
-                    </ng-container>
+                    </ng-container> -->
                 </div>
                 <!-- Checkbox -->
                 <div *ngIf="field.type === 'checkbox'">
-                    <label *ngFor="let option of field.options; let j = index">
+                    <label class="form-check-label ms-4" *ngFor="let option of field.options; let j = index">
                         <input type="checkbox" [formControlName]="j"> {{ option }}
                     </label>
                 </div>

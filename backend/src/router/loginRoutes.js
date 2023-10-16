@@ -1,10 +1,12 @@
 const express = require("express");
 const User = require("../models/users");
+const {validateSignUp, validateLogin} = require('../middleware/validateUser')
+
 const bcrypt = require('bcryptjs')
 
 const router = express.Router();
 
-router.post("/signup", async (req, res) => {
+router.post("/signup",validateSignUp, async (req, res) => {
   console.log("Sign up now")
   const user = new User(req.body);
   user.password = await bcrypt.hash(user.password, 8)
@@ -19,7 +21,7 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-router.post("/login", async (req, res) => {
+router.post("/login",validateLogin, async (req, res) => {
   try{
     const user = await User.findByCredentials(req.body.email, req.body.password)
     const token = await user.generateAuthToken()
