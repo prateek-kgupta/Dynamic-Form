@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Event, Router } from '@angular/router';
 import { UserInfo } from 'src/app/services/user-info.service';
 
 @Component({
@@ -9,10 +9,17 @@ import { UserInfo } from 'src/app/services/user-info.service';
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent {
+  allForms: any = [];
   formList: any = [];
-  currentUser: string = ''
+  currentUser: string = '';
+  filterOn: boolean = false;
+  modalData: any = []
 
-  constructor(private http: HttpClient, private user: UserInfo, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private user: UserInfo,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     const header = new HttpHeaders().set(
@@ -23,23 +30,63 @@ export class DashboardComponent {
     this.http.get(`http://localhost:3000/form`, { headers: header }).subscribe(
       (res) => {
         console.log(res);
-        this.formList = res;
-        this.currentUser = this.user._id
+        this.allForms = res;
+        // this.formList = res;
+        this.formList = this.allForms;
+        this.currentUser = this.user._id;
+        console.log(this.currentUser);
       },
       (err) => {
-        alert("Something went wrong")
+        alert('Something went wrong');
         console.log(err);
       }
     );
   }
-  openForm(formID){
-    this.router.navigate([`/form/${formID}`])
+  openForm(formID) {
+    this.router.navigate([`/form/${formID}`]);
   }
 
-  submissions(event, formId){
-    event.stopPropagation()
-    console.log("Hello")
+  submissions(event, formId) {
+    event.stopPropagation();
+    // API call to get each submissions
+    const header = new HttpHeaders().set(
+      'Authorization',
+      `Bearer ${this.user.token}`
+    );
+
+    this.http
+      .get(`http://localhost:3000/response/responses/${formId}`, { headers: header })
+      .subscribe(
+        (res) => {
+          console.log(res);
+          this.modalData = res
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+    console.log('Hello');
+  }
+  
+
+  toggleView() {
+    // this.filterOn = !this.filterOn
+    this.currentUser = this.user._id;
+    if (!this.currentUser) {
+      this.filterOn = false;
+      this.formList = this.allForms;
+    } else if (this.filterOn) {
+      this.filterOn = false;
+      this.formList = this.allForms;
+    } else {
+      this.filterOn = true;
+      this.formList = this.allForms.filter(
+        (form) => form.owner === this.currentUser
+      );
+    }
+  }
+
+  fullResponse(ResponseId){
+    this.router.navigate([`/response/${ResponseId}`])
   }
 }
-
-

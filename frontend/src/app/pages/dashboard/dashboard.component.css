@@ -11,6 +11,16 @@
     width: 48%;
 }
 
+.mybtn{
+    border-radius: 17px;
+    padding: 0.5rem 0.75rem;
+    width: 20%;
+}
+
+.modal-dialog{
+    max-width: 720px;
+}
+
 @media (max-width: 767.98px){
     .mycard{
         width: 100%;

@@ -1,4 +1,37 @@
+<div><button class="mybtn btn mb-4 mt-2" [ngClass]="{'btn-outline-warning': !filterOn, 'btn-warning': filterOn}"
+        [disabled]="!currentUser" (click)="toggleView()">My forms</button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="verticalCenteredModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title fs-3 mb-0" id="modalLabel">Submissions</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div style="max-height: 480px; overflow-y: auto;">
+                        <div class="card py-3 px-5 mb-4" *ngFor="let response of modalData">
+                            <div class="row align-items-center">
+                                <div class="col-md-6">{{response.user[0].name}}</div>
+                                <div class="col-md-6 text-end"><button class="btn btn-primary" data-bs-dismiss="modal" (click)="fullResponse(response._id)">Full Response</button></div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--  -->
+</div>
 <div class="d-md-flex flex-wrap justify-content-between">
+
     <div class="card mycard py-3 px-5 mb-4" *ngFor="let form of formList" (click)="openForm(form._id)">
         <div class="row">
             <div class="col-lg-6 d-flex align-items-center"><span class="h3">{{form.title}}</span></div>
@@ -8,7 +41,10 @@
                     Questions: </span> {{form.numberOfQues}}</div>
         </div>
         <div class="row mt-4">
-            <button class="btn btn-primary" [disabled]="currentUser !== form.owner" (click)="submissions($event, form._id)">Show Submissions</button>
+            <button class="btn btn-primary" [disabled]="currentUser !== form.owner"
+                (click)="submissions($event, form._id)" data-bs-toggle="modal"
+                data-bs-target="#verticalCenteredModal">Show
+                Submissions</button>
         </div>
     </div>
 </div>

@@ -20,6 +20,7 @@ router.post("/", validateResponse, async (req, res) => {
   }
 });
 
+// Get response to a form
 router.get("/:responseId", async (req, res) => {
   const responseId = new mongoose.Types.ObjectId(req.params.responseId);
   const seekerId = req.user._id;
@@ -60,6 +61,41 @@ router.get("/:responseId", async (req, res) => {
     return res.status(200).send(result);
   } catch (e) {
     console.log(e);
+    res.status(400).send(e);
+  }
+});
+
+router.get("/responses/:formId", async (req, res) => {
+  const formId = new mongoose.Types.ObjectId(req.params.formId);
+  const seekerId = req.user._id;
+  console.log(formId)
+  console.log(seekerId)
+  try {
+    const result = await Response.aggregate([
+      {
+        $lookup: {
+          from: "users",
+          localField: "responderId",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $match: { formId: formId} },
+      {
+        $addFields: {
+          timestamp: { $toDate: '$_id' } // Extract and add the timestamp field
+        }
+      },
+      {$project: {
+        _id: 1,
+        formId: 1,
+        'user.name': 1,
+        timestamp: 1
+      }}
+    ]);
+    // console.log(result)
+    res.status(200).send(result)
+  } catch (e) {
     res.status(400).send(e);
   }
 });
