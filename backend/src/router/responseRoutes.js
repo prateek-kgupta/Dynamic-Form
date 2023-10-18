@@ -2,6 +2,7 @@ const express = require("express");
 const auth = require("../middleware/auth");
 const Response = require("../models/responses");
 const mongoose = require("mongoose");
+const {responseMail} = require("../mailer");
 
 const { validateResponse } = require("../middleware/validateResponse");
 
@@ -14,6 +15,11 @@ router.post("/", validateResponse, async (req, res) => {
   const response = new Response(responseData);
   try {
     const result = await response.save();
+    const email = req.user.email
+    if (result) {
+      const mailStatus = responseMail(email)
+      console.log(mailStatus)
+    }
     res.status(200).send(result);
   } catch (e) {
     res.status(400).send(e);
@@ -68,8 +74,8 @@ router.get("/:responseId", async (req, res) => {
 router.get("/responses/:formId", async (req, res) => {
   const formId = new mongoose.Types.ObjectId(req.params.formId);
   const seekerId = req.user._id;
-  console.log(formId)
-  console.log(seekerId)
+  console.log(formId);
+  console.log(seekerId);
   try {
     const result = await Response.aggregate([
       {
@@ -80,21 +86,23 @@ router.get("/responses/:formId", async (req, res) => {
           as: "user",
         },
       },
-      { $match: { formId: formId} },
+      { $match: { formId: formId } },
       {
         $addFields: {
-          timestamp: { $toDate: '$_id' } // Extract and add the timestamp field
-        }
+          timestamp: { $toDate: "$_id" }, // Extract and add the timestamp field
+        },
       },
-      {$project: {
-        _id: 1,
-        formId: 1,
-        'user.name': 1,
-        timestamp: 1
-      }}
+      {
+        $project: {
+          _id: 1,
+          formId: 1,
+          "user.name": 1,
+          timestamp: 1,
+        },
+      },
     ]);
     // console.log(result)
-    res.status(200).send(result)
+    res.status(200).send(result);
   } catch (e) {
     res.status(400).send(e);
   }

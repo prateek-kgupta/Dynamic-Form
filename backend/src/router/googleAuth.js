@@ -11,18 +11,8 @@ passport.use(
       session: false,
     },
     function (request, accessToken, refreshToken, profile, done) {
-      // console.log(profile)
       done(null, profile);
     }
   )
 );
 
-// passport.serializeUser((user, done) => {
-//   console.log("Serialize", user);
-//   done(null, user);
-// });
-
-// passport.deserializeUser((user, done) => {
-//   console.log("Deserialize", user);
-//   done(null, user);
-// });

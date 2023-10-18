@@ -4,6 +4,7 @@ const uuid = require("uuid");
 
 const User = require("../models/users");
 const { validateSignUp, validateLogin } = require("../middleware/validateUser");
+const {verificationMail} = require('../mailer')
 require("../router/googleAuth");
 
 const bcrypt = require("bcryptjs");
@@ -20,6 +21,9 @@ router.post("/signup", validateSignUp, async (req, res) => {
     await user.save();
     const token = await user.generateAuthToken();
     console.log(token);
+    // Mail slug to the email id provided by user
+    const mailStatus = verificationMail(user.slug, user.email, user.name)
+    console.log(mailStatus)
     res
       .status(201)
       .send({ _id: user.id, name: user.name, email: user.email, token });
