@@ -26,6 +26,13 @@ const userSchema = new mongoose.Schema({
         throw new Error("Email is invalid");
       }
     },
+  },
+  slug: {
+    type: String
+  },
+  isVerified: {
+    type: Boolean,
+    default: false
   }
 });
 

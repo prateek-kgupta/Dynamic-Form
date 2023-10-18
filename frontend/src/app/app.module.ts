@@ -17,6 +17,8 @@ import { UserInfo } from './services/user-info.service';
 import { ShowResponseComponent } from './pages/show-response/show-response.component';
 import { RouteGuardService } from './services/route-guard.service';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
+import { VerifyAccountComponent } from './pages/verify-account/verify-account.component';
+import { MiddlerComponent } from './components/middler/middler.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +32,8 @@ import { NotFoundComponent } from './pages/not-found/not-found.component';
     OptionFieldComponent,
     ShowResponseComponent,
     NotFoundComponent,
+    VerifyAccountComponent,
+    MiddlerComponent,
   ],
   imports: [
     BrowserModule,

@@ -44,7 +44,7 @@ export class AuthorizationComponent {
   }
 
   setToken(token: string) {
-    this.cookieService.set('token', token);
+    this.cookieService.set('token', token, 1, '/');
   }
 
   loginSubmit() {
@@ -100,5 +100,9 @@ export class AuthorizationComponent {
   }
   toggle() {
     this.login = !this.login;
+  }
+
+  googleSignIn() {
+    window.location.href=`http://localhost:3000/user/auth/google`
   }
 }

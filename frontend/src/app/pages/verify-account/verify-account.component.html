@@ -1,0 +1,20 @@
+<div class="activationPageWrapper">
+
+    <p class="display-3" *ngIf="error && !loading">
+        Invalid Account Activation Link
+    </p>
+    <p class="display-3" *ngIf="loading">
+        Loading...
+    </p>
+    <div *ngIf="!error  && !loading" class="d-flex flex-column">
+        <p class="display-3 text-center">
+            Account Verified Successfully
+        </p>
+        <br>
+        <!-- <RouterLink to="/login" class="align-self-center mt-3"> -->
+            <div class="btn btn-success text-center loginAgainText" routerLink="/login">
+                Please Click here to login again
+            </div>
+        <!-- </RouterLink> -->
+    </div>
+  </div>

@@ -13,7 +13,7 @@
             </div>
         </ng-container>
         <button class="btn btn-success" (click)="loginSubmit()">Login</button>
-        <p>Not a user? <a class="link-opacity-100 " (click)="toggle()">Sign Up</a></p>
+        <p>Not a user? <a class="link-opacity-100 text-info" (click)="toggle()">Sign Up</a></p>
     </ng-container>
     <ng-container *ngIf="!login">
         <h1>Sign Up</h1>
@@ -39,7 +39,8 @@
             </div>
         </ng-container>
         <button class="btn btn-success" (click)="signupSubmit()">Sign Up</button>
-        <p>Already Registered? <a class="link-opacity-100 " (click)="toggle()">Login</a></p>
+        <p>Already Registered? <a class="link-opacity-100 text-info" (click)="toggle()">Login</a></p>
     </ng-container>
+    <button class="btn btn-outline-info w-100" (click)="googleSignIn()">Sign In with Google</button>
 
 </div>

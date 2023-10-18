@@ -3,7 +3,7 @@
     max-width: 520px;
     display: flex;
     flex-direction: column;
-    min-height: 400px;
+    min-height: 450px;
     background-image: linear-gradient(to bottom right,  rgb(156, 151, 151),rgb(112, 117, 117));
     padding: 10px 20px;
     align-items: center;

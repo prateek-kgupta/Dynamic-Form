@@ -10,11 +10,14 @@ import { UserInfo } from 'src/app/services/user-info.service';
 })
 export class NavbarComponent {
   token: string = '';
+  name: string = ''
   constructor(
     private cookieService: CookieService,
     private router: Router,
     private user: UserInfo
-  ) {}
+  ) {
+    // this.token = this.user.token
+  }
 
   ngOnInit() {
     this.token = this.cookieService.get('token');
@@ -25,12 +28,16 @@ export class NavbarComponent {
       this.user.loggedIn = true;
       this.user['_id'] = payload._id;
       this.user['name'] = payload.name;
+      this.name = payload.name
     }
   }
 
   changeLog() {
     if (this.token) {
-      this.cookieService.delete('token');
+      console.log("Delete token")
+      this.cookieService.delete('token', '/');
+      console.log(this.cookieService.get('token'))
+      this.name = ''
       this.token = '';
       this.user.token = '';
       this.user['_id'] = '';
@@ -41,5 +48,10 @@ export class NavbarComponent {
     } else {
       this.router.navigate(['/login']);
     }
+  }
+
+  ngDoCheck(){
+    this.token = this.user.token
+    this.name = this.user.name
   }
 }

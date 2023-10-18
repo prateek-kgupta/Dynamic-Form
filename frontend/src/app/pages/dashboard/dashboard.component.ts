@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Event, Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
 import { UserInfo } from 'src/app/services/user-info.service';
 
 @Component({
@@ -18,10 +19,12 @@ export class DashboardComponent {
   constructor(
     private http: HttpClient,
     private user: UserInfo,
-    private router: Router
+    private router: Router,
+    private cookieService: CookieService
   ) {}
 
   ngOnInit() {
+    console.log("ON the dashboard\n",this.user, '\n Searching for token from cookie\n',this.cookieService.get('token'))
     const header = new HttpHeaders().set(
       'Authorization',
       `Bearer ${this.user.token}`

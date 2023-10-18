@@ -9,26 +9,23 @@ import { UserInfo } from './services/user-info.service';
 })
 export class AppComponent {
   currentRoute: string = '';
-  showNav: boolean = true
+  showNav: boolean = true;
 
   constructor(private router: Router, private user: UserInfo) {
-
     router.events.subscribe((event: Event) => {
-      if(event instanceof NavigationEnd){
-        this.currentRoute = event.url
-        if(this.currentRoute === '/login'){
-          this.showNav = false
+      if (event instanceof NavigationEnd) {
+        this.currentRoute = event.url;
+        if (this.currentRoute === '/login') {
+          this.showNav = false;
+        } else if (this.currentRoute.startsWith('/login?')) {
+          this.showNav = false;
+        } else {
+          this.showNav = true;
         }
-        else if(this.currentRoute.startsWith('/login?')){
-          this.showNav = false
-        }
-        else{
-          this.showNav = true
-        }
-        this.user.routeInfo = this.currentRoute
+        this.user.routeInfo = this.currentRoute;
+        // console.log("In the app: ",this.currentRoute)
+        // console.log("User service", this.user.routeInfo)
       }
-    })
-
-
+    });
   }
 }

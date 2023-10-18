@@ -8,6 +8,8 @@ import { ViewFormComponent } from './pages/view-form/view-form.component';
 import { ShowResponseComponent } from './pages/show-response/show-response.component';
 import { RouteGuardService } from './services/route-guard.service';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
+import { VerifyAccountComponent } from './pages/verify-account/verify-account.component';
+import { MiddlerComponent } from './components/middler/middler.component';
 
 const routes: Routes = [
   {path: '', component: DashboardComponent},
@@ -15,6 +17,8 @@ const routes: Routes = [
   {path: 'create', component: GenerateFormComponent, canActivate: [RouteGuardService]},
   {path: 'form/:formId', component: ViewFormComponent, canActivate: [RouteGuardService]},
   {path: 'response/:responseId', component: ShowResponseComponent, canActivate: [RouteGuardService]},
+  {path: 'verify/:slug', component: VerifyAccountComponent},
+  {path: 'middler/:token', component: MiddlerComponent},
   {path: '**', component: NotFoundComponent}
 ];
 
