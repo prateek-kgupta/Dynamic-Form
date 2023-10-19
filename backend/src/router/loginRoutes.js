@@ -4,8 +4,10 @@ const uuid = require("uuid");
 
 const User = require("../models/users");
 const { validateSignUp, validateLogin } = require("../middleware/validateUser");
-const {verificationMail} = require('../mailer')
+const { verificationMail } = require("../mailer");
 require("../router/googleAuth");
+
+const auth = require("../middleware/auth");
 
 const bcrypt = require("bcryptjs");
 
@@ -22,8 +24,8 @@ router.post("/signup", validateSignUp, async (req, res) => {
     const token = await user.generateAuthToken();
     console.log(token);
     // Mail slug to the email id provided by user
-    const mailStatus = verificationMail(user.slug, user.email, user.name)
-    console.log(mailStatus)
+    const mailStatus = verificationMail(user.slug, user.email, user.name);
+    console.log(mailStatus);
     res
       .status(201)
       .send({ _id: user.id, name: user.name, email: user.email, token });
@@ -56,9 +58,9 @@ router.get("/verify/:slug", async (req, res) => {
     );
     console.log(result);
     if (result) {
-      res.status(200).send({message: "success"});
+      res.status(200).send({ message: "success" });
     } else {
-      res.status(404).send({message: "Not found"})
+      res.status(404).send({ message: "Not found" });
     }
   } catch (e) {
     res.status(400).send(e);
@@ -107,6 +109,26 @@ router.get(
 
 router.get("/fail", (req, res) => {
   res.send({ msg: "failed" });
+});
+
+// Fetching author information, needs authorization
+
+router.use(auth);
+router.get("/getUser/:searchTerm", async (req, res) => {
+  const searchTerm = req.params.searchTerm;
+  try {
+    const result = await User.find({
+      $or: [
+        { name: { $regex: searchTerm, $options: "i" } },
+        { email: { $regex: searchTerm, $options: "i" } },
+      ],
+    }).select('_id name email');
+    console.log(result);
+    res.send(result);
+  } catch (e) {
+    console.log(e);
+    res.status(400).send(e);
+  }
 });
 
 module.exports = router;

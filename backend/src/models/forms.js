@@ -10,8 +10,18 @@ const formSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
+   status: {
+    type: String,
+    trim: true,
+  },
+  editors: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    }
+  ],
   form: [
     {
       ques: {
@@ -32,6 +42,8 @@ const formSchema = new mongoose.Schema({
       options: [String],
     },
   ],
+ 
+  
 });
 
 formSchema.virtual("responsesForQues", {

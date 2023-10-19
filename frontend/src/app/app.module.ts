@@ -19,6 +19,7 @@ import { RouteGuardService } from './services/route-guard.service';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { VerifyAccountComponent } from './pages/verify-account/verify-account.component';
 import { MiddlerComponent } from './components/middler/middler.component';
+import { AddEditorsComponent } from './components/add-editors/add-editors.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { MiddlerComponent } from './components/middler/middler.component';
     NotFoundComponent,
     VerifyAccountComponent,
     MiddlerComponent,
+    AddEditorsComponent,
   ],
   imports: [
     BrowserModule,

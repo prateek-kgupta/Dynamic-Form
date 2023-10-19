@@ -11,6 +11,8 @@ import { UserInfo } from 'src/app/services/user-info.service';
 })
 export class GenerateFormComponent {
   formTitle: string = 'Form Name...';
+  editors = []
+  status: string = 'Active'
   generateForm: FormGroup = new FormGroup({
     fields: new FormArray([new FormControl(null)]),
   });
@@ -27,8 +29,16 @@ export class GenerateFormComponent {
     });
   }
 
+  saveDraft(){
+    this.status = 'Draft'
+    console.log(this.editors)
+    this.onSubmit()
+  }
+
   onSubmit() {
     const formData = this.generateForm.get('fields').value;
+    // formData.status = this.status
+    // formData.editors = this.editors
     console.log(formData, this.generateForm.valid);
     if (formData.length > 0 && this.generateForm.valid) {
       const header = new HttpHeaders().set(
@@ -38,7 +48,7 @@ export class GenerateFormComponent {
       this.http
         .post(
           'http://localhost:3000/form',
-          { form: formData, owner: this.user._id, title: this.formTitle },
+          { form: formData, owner: this.user._id, title: this.formTitle, editors:this.editors, status:this.status },
           { headers: header }
         )
         .subscribe(

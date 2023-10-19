@@ -1,0 +1,30 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-9">
+            <div class="row">
+                <input class="form-control" type="search" placeholder="Search for name or email" aria-label="Search"
+                    [(ngModel)]="searchTerm" (click)="showUsers = true">
+                <!-- List of users from fetch -->
+                <div class="w-100 px-0 position-relative" *ngIf="showUsers && searchResults.length>0">
+                    <div class="list-group position-absolute w-100">
+                        <a class="list-group-item list-group-item-action" data-bs-toggle="list"
+                            *ngFor="let user of searchResults" (click)="addEditor(user)">{{user.email}}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-3"><button class="btn btn-outline-success" (click)="getUser()">Search</button></div>
+        <!-- List of selected editors -->
+        <div class="mt-2 border-top" *ngIf="editorsDisplay.length > 0">
+            <div class="row py-4 align-items-center border-start border-end border-bottom"
+                *ngFor="let editor of editorsDisplay, index as i">
+                <div class="col-4">{{editor.name}}</div>
+                <div class="col-7">{{editor.email}}</div>
+                <div class="col-1"> <i class="fa-solid fa-xmark fa-xl" style="color: #860404;"
+                        (click)="removeEditor(i)"></i></div>
+            </div>
+            <div class="row text-center"><button class="btn btn-success mt-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions"
+                aria-controls="offcanvasWithBothOptions">Done</button></div>
+        </div>
+    </div>
+</div>
