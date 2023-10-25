@@ -9,7 +9,7 @@ import { UserInfo } from 'src/app/services/user-info.service';
 })
 export class AddEditorsComponent {
   @Input() editors = [];
-  editorsDisplay = []
+  @Input() editorsDisplay = []
   searchTerm: string = ''
   searchResults: any = []
   showUsers: Boolean = false
@@ -18,7 +18,7 @@ export class AddEditorsComponent {
 
   getUser() {
     // http request to get user from database
-    const token = this.user.token;
+    // const token = this.user.token;
     const header = new HttpHeaders().set(
       'Authorization',
       `Bearer ${this.user.token}`

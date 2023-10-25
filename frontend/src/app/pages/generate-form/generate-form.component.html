@@ -4,7 +4,7 @@
         aria-controls="offcanvasWithBothOptions">Add Editors</button>
 
 </div>
-<form [formGroup]="generateForm" (ngSubmit)="onSubmit()">
+<form class="pb-3" [formGroup]="generateForm" (ngSubmit)="onSubmit()">
     <div formArrayName="fields">
         <ng-container *ngFor="let iterator of generateForm.get('fields')['controls']; index as i">
             <app-form-card (fieldDetails)="createControls($event, i)" (removeField)="deleteField( i)"></app-form-card>
@@ -17,9 +17,6 @@
         <i class="fa-solid fa-file-pen me-2"></i>
         Save as Draft
     </button>
-    <!-- <button type="button" class="btn btn-primary w-0 me-2" (click)="addField()">
-        <i class="fa-solid fa-plus me-2"></i>Add new field
-    </button> -->
     <button class="btn btn-success w-25 ms-2">Submit</button>
 </form>
 

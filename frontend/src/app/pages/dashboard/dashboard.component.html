@@ -1,7 +1,17 @@
-<div><button class="mybtn btn mb-4 mt-2" [ngClass]="{'btn-outline-warning': !filterOn, 'btn-warning': filterOn}"
-        [disabled]="!currentUser" (click)="toggleView()">My forms</button>
+<div class="d-flex">
+    <button class="mybtn btn mb-4 mt-2"
+        [ngClass]="{'btn-outline-warning': filterOn !== 'available', 'btn-warning': filterOn === 'available'}"
+        [disabled]="!currentUser" (click)="filterForm('available')">Available Forms</button>
+    <button class="mybtn btn mb-4 mt-2 ms-2"
+        [ngClass]="{'btn-outline-warning': filterOn !== 'owner', 'btn-warning': filterOn === 'owner'}"
+        [disabled]="!currentUser" (click)="filterForm('owner')">My forms</button>
+    <button class="mybtn btn ms-2 mb-4 mt-2"
+        [ngClass]="{'btn-outline-warning': filterOn !== 'shared', 'btn-warning': filterOn === 'shared'}"
+        [disabled]="!currentUser" (click)="filterForm('shared')">Shared forms</button>
 
-    <!-- Modal -->
+    
+
+    <!-- Modal for showing responses -->
     <div class="modal fade" id="verticalCenteredModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -15,10 +25,10 @@
                         <div class="card py-3 px-5 mb-4" *ngFor="let response of modalData">
                             <div class="row align-items-center">
                                 <div class="col-md-6">{{response.user[0].name}}</div>
-                                <div class="col-md-6 text-end"><button class="btn btn-primary" data-bs-dismiss="modal" (click)="fullResponse(response._id)">Full Response</button></div>
+                                <div class="col-md-6 text-end"><button class="btn btn-primary" data-bs-dismiss="modal"
+                                        (click)="fullResponse(response._id)">Full Response</button></div>
                             </div>
                         </div>
-                        
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -27,24 +37,46 @@
             </div>
         </div>
     </div>
-
     <!--  -->
+
+
 </div>
 <div class="d-md-flex flex-wrap justify-content-between">
-
-    <div class="card mycard py-3 px-5 mb-4" *ngFor="let form of formList" (click)="openForm(form._id)">
-        <div class="row">
-            <div class="col-lg-6 d-flex align-items-center"><span class="h3">{{form.title}}</span></div>
-            <div class="col-lg-3 d-flex align-items-center justify-content-center"><span class="titles me-2">Author:
-                </span> {{form.user[0].name}}</div>
-            <div class="col-lg-3 d-flex align-items-center justify-content-center"><span class="titles me-2">
-                    Questions: </span> {{form.numberOfQues}}</div>
+    <ng-container *ngIf="formList.length === 0">
+        <h1 class="text-secondary fs-1 mt-3 ms-4">No forms found</h1>
+    </ng-container>
+    <ng-container *ngIf="formList.length > 0">
+        <div class="card mycard py-3 px-5 mb-4 justify-content-evenly" *ngFor="let form of formList">
+            <!--  -->
+            <div class="row">
+                <div class="col-lg-6 d-flex align-items-center"><span class="h3">{{form.title}}</span></div>
+                <div class="col-lg-3 d-flex align-items-center justify-content-center"><span class="titles me-2">Author:
+                    </span> {{form.user[0].name}}</div>
+                <div class="col-lg-3 d-flex align-items-center justify-content-center"><span class="titles me-2">
+                        Questions: </span> {{form.numberOfQues}}</div>
+            </div>
+            <div class="row mt-4 action-buttons">
+                <button class="btn btn-primary" [disabled]="currentUser !== form.owner"
+                    (click)="submissions($event, form._id)" data-bs-toggle="modal"
+                    data-bs-target="#verticalCenteredModal">Show
+                    Submissions</button>
+                <div class="btn-group px-0">
+                    <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown"
+                        aria-expanded="false" [disabled]="currentUser !== form.owner">
+                        {{form.status}}
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" (click)="changeStatus(form._id, 'Active', form.status)">Active</a>
+                        </li>
+                        <li><a class="dropdown-item"
+                                (click)="changeStatus(form._id,'Inactive', form.status)">Inactive</a></li>
+                    </ul>
+                </div>
+                <button class="btn btn-danger" [disabled]="currentUser !== form.owner"
+                    (click)="deleteForm(form._id)">Delete Form</button>
+                <button class="btn btn-outline-success" (click)="openForm(form._id)"
+                    [disabled]="form['status'] !== 'Active'">Fill Response</button>
+            </div>
         </div>
-        <div class="row mt-4">
-            <button class="btn btn-primary" [disabled]="currentUser !== form.owner"
-                (click)="submissions($event, form._id)" data-bs-toggle="modal"
-                data-bs-target="#verticalCenteredModal">Show
-                Submissions</button>
-        </div>
-    </div>
+    </ng-container>
 </div>

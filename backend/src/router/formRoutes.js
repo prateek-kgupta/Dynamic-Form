@@ -1,5 +1,8 @@
 const express = require("express");
+const mongoose = require("mongoose");
+
 const Form = require("../models/forms");
+const Response = require("../models/responses");
 const auth = require("../middleware/auth");
 const { validateForm } = require("../middleware/validateForm");
 
@@ -8,7 +11,7 @@ const router = express.Router();
 // router.use(auth);
 
 // ADD NEW FORM
-router.post("/",auth, validateForm, async (req, res) => {
+router.post("/", auth, validateForm, async (req, res) => {
   const form = new Form(req.body);
   try {
     const result = await form.save();
@@ -27,7 +30,7 @@ router.get("/", async (req, res) => {
           from: "users",
           localField: "owner",
           foreignField: "_id",
-          as: "user"
+          as: "user",
         },
       },
       {
@@ -35,36 +38,131 @@ router.get("/", async (req, res) => {
           _id: 1,
           owner: 1,
           title: 1,
-          numberOfQues: { $size: '$form' },
-          "user.name": 1
-        }
-      }
+          editors: 1,
+          status: 1,
+          numberOfQues: { $size: "$form" },
+          "user.name": 1,
+        },
+      },
     ]);
-    res.send(forms)
-  } catch (err) {
-    res.status(400).send(err);
-  }
-});
-
-router.get("/user/:userId",auth, async (req, res) => {
-  // Get all forms created by an user
-
-  // Update the query for grouping forms by id and getting number of questions and author name
-  try {
-    const forms = await Form.find({ owner: req.params.userId });
     res.send(forms);
   } catch (err) {
     res.status(400).send(err);
   }
 });
 
-router.get("/:formId",auth, async (req, res) => {
+
+router.get("/:formId", auth, async (req, res) => {
+  let searchQuery = { _id: req.params.formId };
+
   try {
-    console.log(req.params.formId);
-    const form = await Form.findOne({ _id: req.params.formId });
-    res.send(form);
+    const form = await Form.findOne(searchQuery);
+    if (!form) {
+      return res.status(404).send({ message: "No data found" });
+    }
+    return res.send(form);
   } catch (err) {
+    console.log(err);
     res.status(400).send(err);
+  }
+});
+
+// FORM DETAILS FOR EDITING
+router.get("/edit/:formId", auth, async (req, res) => {
+  const formId = new mongoose.Types.ObjectId(req.params.formId);
+  try {
+    const form = await Form.aggregate([
+      {
+        $lookup: {
+          from: "users",
+          localField: "editors",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      {
+        $match: {
+          _id: formId,
+          $or: [{ owner: req.user._id }, { editors: req.user._id }],
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          owner: 1,
+          form: 1,
+          title: 1,
+          "user._id": 1,
+          "user.name": 1,
+          "user.email": 1,
+        },
+      },
+    ]);
+    let result;
+    if (!form[0]) {
+      return res.status(404).send({ message: "No data found" });
+    }
+    if (form[0].owner.toString() === req.user._id.toString()) {
+      // Owner
+      result = { ...form[0], editors: form[0].user, isOwner: true };
+      delete result["user"];
+    } else {
+      // Editor
+      result = { ...form[0], isOwner: false };
+      delete result["user"];
+    }
+    res.send(result);
+  } catch (e) {
+    console.log(e);
+    res.status(400).send(e);
+  }
+});
+
+// UPDATING THE EDITED FORM
+router.patch("/edit/:formId", auth, async (req, res) => {
+  const condition = { _id: req.params.formId };
+  const update = { $set: { ...req.body } };
+  console.log(update, "\n\n", condition);
+  try {
+    const result = await Form.updateOne(condition, update);
+    console.log(result);
+    res.send(condition);
+  } catch (e) {
+    res.status(400).send(e);
+  }
+});
+
+router.patch("/editStatus/:formId", auth, async (req, res) => {
+  const status = req.body.status;
+  try {
+    const result = await Form.updateOne(
+      { _id: req.params.formId },
+      { $set: { status } }
+    );
+    console.log(result);
+    res.send(result);
+  } catch (e) {
+    res.status(400).send(e);
+  }
+});
+
+router.delete("/delete/:formId", auth, async (req, res) => {
+  try {
+    const form = await Form.findOneAndDelete({
+      _id: req.params.formId,
+      owner: req.user._id,
+    });
+    console.log(form)
+    if (form) {
+      const response = await Response.deleteMany({ formId: req.params.formId });
+    }
+    else{
+      return res.status(400).send({message: "Invalid Request"})
+    }
+    return res.send({ message: "Deleted" });
+  } catch (e) {
+    console.log(e);
+    res.status(400).send(e);
   }
 });
 

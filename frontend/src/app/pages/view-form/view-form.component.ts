@@ -19,6 +19,7 @@ export class ViewFormComponent {
   formId: string = '';
   formTemplate: any = [];
   formTitle: string = 'Form Title';
+  Draft: boolean = false
   responseForm: FormGroup = new FormGroup({
     fields: new FormArray([]),
   });
@@ -41,7 +42,8 @@ export class ViewFormComponent {
       .subscribe(
         // RECIEVING FORM DATA FROM BACKEND
         (res) => {
-          // console.log(res);
+          console.log(res);
+          this.Draft = res['status'] === 'Draft'
           this.formTemplate = res['form'];
           this.formTitle = res['title'];
           this.responseForm = new FormGroup({

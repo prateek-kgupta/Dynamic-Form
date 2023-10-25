@@ -13,8 +13,8 @@ export class DashboardComponent {
   allForms: any = [];
   formList: any = [];
   currentUser: string = '';
-  filterOn: boolean = false;
-  modalData: any = []
+  filterOn: string = 'available';
+  modalData: any = [];
 
   constructor(
     private http: HttpClient,
@@ -24,7 +24,12 @@ export class DashboardComponent {
   ) {}
 
   ngOnInit() {
-    console.log("ON the dashboard\n",this.user, '\n Searching for token from cookie\n',this.cookieService.get('token'))
+    console.log(
+      'ON the dashboard\n',
+      this.user,
+      '\n Searching for token from cookie\n',
+      this.cookieService.get('token')
+    );
     const header = new HttpHeaders().set(
       'Authorization',
       `Bearer ${this.user.token}`
@@ -35,7 +40,8 @@ export class DashboardComponent {
         console.log(res);
         this.allForms = res;
         // this.formList = res;
-        this.formList = this.allForms;
+        this.formList = this.allForms.filter((form) => form.status !== 'Draft');
+        console.log(this.formList);
         this.currentUser = this.user._id;
         console.log(this.currentUser);
       },
@@ -58,11 +64,13 @@ export class DashboardComponent {
     );
 
     this.http
-      .get(`http://localhost:3000/response/responses/${formId}`, { headers: header })
+      .get(`http://localhost:3000/response/responses/${formId}`, {
+        headers: header,
+      })
       .subscribe(
         (res) => {
           console.log(res);
-          this.modalData = res
+          this.modalData = res;
         },
         (err) => {
           console.log(err);
@@ -70,26 +78,90 @@ export class DashboardComponent {
       );
     console.log('Hello');
   }
-  
 
-  toggleView() {
-    // this.filterOn = !this.filterOn
+  filterForm(command) {
     this.currentUser = this.user._id;
     if (!this.currentUser) {
-      this.filterOn = false;
-      this.formList = this.allForms;
-    } else if (this.filterOn) {
-      this.filterOn = false;
-      this.formList = this.allForms;
-    } else {
-      this.filterOn = true;
+      this.formList = this.allForms.filter((form) => form.status !== 'Draft');
+      return;
+    }
+    this.filterOn = command;
+    if (command === 'owner') {
       this.formList = this.allForms.filter(
         (form) => form.owner === this.currentUser
       );
+    } else if (command === 'shared') {
+      this.formList = this.allForms.filter(
+        (form) =>
+          form.owner === this.currentUser ||
+          form.editors.includes(this.currentUser)
+      );
+    } else {
+      this.formList = this.allForms.filter((form) => form.status !== 'Draft');
     }
   }
 
-  fullResponse(ResponseId){
-    this.router.navigate([`/response/${ResponseId}`])
+  fullResponse(ResponseId) {
+    this.router.navigate([`/response/${ResponseId}`]);
+  }
+
+  changeStatus(formId, newStatus, oldStatus) {
+    if (oldStatus === newStatus) {
+      return;
+    }
+    const header = new HttpHeaders().set(
+      'Authorization',
+      `Bearer ${this.user.token}`
+    );
+
+    this.http
+      .patch(
+        `http://localhost:3000/form/editStatus/${formId}`,
+        { status: newStatus },
+        { headers: header }
+      )
+      .subscribe(
+        (res) => {
+          if (res['acknowledged']) {
+            for (let form of this.formList) {
+              if (form._id === formId) {
+                form.status = newStatus;
+
+                break;
+              }
+            }
+            for (let form of this.allForms) {
+              if (form._id === formId) {
+                form.status = newStatus;
+                break;
+              }
+            }
+          }
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+  }
+
+  deleteForm(formId){
+    const header = new HttpHeaders().set(
+      'Authorization',
+      `Bearer ${this.user.token}`
+    );
+    this.http.delete(`http://localhost:3000/form/delete/${formId}`, {headers: header})
+    .subscribe((res) => {
+      if(res['message'] === 'Deleted'){
+        this.formList = this.formList.filter(form => form._id !== formId)
+        this.allForms = this.allForms.filter(form => form._id !== formId)
+      }
+    }, (err) => {
+      if(err.error.message === 'Invalid Request'){
+        alert("Invalid Request")
+      }
+      else{
+        alert("Something went wrong")
+      }
+    })
   }
 }

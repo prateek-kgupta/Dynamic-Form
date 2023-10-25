@@ -1,0 +1,45 @@
+<div class="d-flex justify-content-center" *ngIf="loading">
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
+<ng-container *ngIf="!loading">
+    <div class="card py-3 px-5 mb-4 d-md-flex flex-row justify-content-between align-items-center">
+        <input type="text" class="h1 me-4 mb-0" style="outline: none;" [(ngModel)]="formTitle" />
+        <button class="btn btn-primary w-25" type="button" data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions" [disabled]="!isOwner">Add
+            Editors</button>
+    
+    </div>
+    <form class="pb-3" [formGroup]="editForm" (ngSubmit)="onSubmit('Active')">
+        <div formArrayName="fields">
+            <ng-container *ngFor="let iterator of editForm.get('fields')['controls']; index as i">
+                <!-- {{iterator.value.type}} {{iterator.value.ques}} {{iterator.value.isRequired}} {{iterator.value.options}} -->
+                <app-form-card [question]="iterator.value.ques" [type]="iterator.value.type"
+                    [isRequired]="iterator.value.isRequired"
+                    [options]="iterator.value.options.length>0 ? iterator.value.options : ['Option']"
+                    (fieldDetails)="createControls($event, i)" (removeField)="deleteField( i)"></app-form-card>
+            </ng-container>
+        </div>
+        <button type="button" class="btn btn-outline-primary w-25 me-2" (click)="addField()">
+            <i class="fa-solid fa-plus me-2"></i>Add new field
+        </button>
+        <button type="button" class="btn btn-secondary w-25 me-2" (click)="onSubmit('Draft')">
+            <i class="fa-solid fa-file-pen me-2"></i>
+            Save as Draft
+        </button>
+        <button class="btn btn-success w-25 ms-2" [disabled]="!isOwner">Submit</button>
+    </form>
+    
+    <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
+        aria-labelledby="offcanvasWithBothOptionsLabel" *ngIf="isOwner">
+        <div class="offcanvas-header">
+            <h3 class="offcanvas-title mb-0" id="offcanvasWithBothOptionsLabel">Add Editors to your Form</h3>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <app-add-editors [editorsDisplay]="editorsDisplay" [editors]="editors"></app-add-editors>
+        </div>
+    </div>
+</ng-container>

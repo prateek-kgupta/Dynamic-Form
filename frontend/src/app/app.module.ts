@@ -20,6 +20,7 @@ import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { VerifyAccountComponent } from './pages/verify-account/verify-account.component';
 import { MiddlerComponent } from './components/middler/middler.component';
 import { AddEditorsComponent } from './components/add-editors/add-editors.component';
+import { EditFormComponent } from './pages/edit-form/edit-form.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { AddEditorsComponent } from './components/add-editors/add-editors.compon
     VerifyAccountComponent,
     MiddlerComponent,
     AddEditorsComponent,
+    EditFormComponent,
   ],
   imports: [
     BrowserModule,

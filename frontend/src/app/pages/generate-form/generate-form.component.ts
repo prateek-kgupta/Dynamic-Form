@@ -11,8 +11,8 @@ import { UserInfo } from 'src/app/services/user-info.service';
 })
 export class GenerateFormComponent {
   formTitle: string = 'Form Name...';
-  editors = []
-  status: string = 'Active'
+  editors = [];
+  status: string = 'Active';
   generateForm: FormGroup = new FormGroup({
     fields: new FormArray([new FormControl(null)]),
   });
@@ -29,17 +29,15 @@ export class GenerateFormComponent {
     });
   }
 
-  saveDraft(){
-    this.status = 'Draft'
-    console.log(this.editors)
-    this.onSubmit()
+  saveDraft() {
+    this.status = 'Draft';
+    console.log(this.editors);
+    this.onSubmit();
   }
 
   onSubmit() {
     const formData = this.generateForm.get('fields').value;
-    // formData.status = this.status
-    // formData.editors = this.editors
-    console.log(formData, this.generateForm.valid);
+    // console.log(formData, this.generateForm.valid);
     if (formData.length > 0 && this.generateForm.valid) {
       const header = new HttpHeaders().set(
         'Authorization',
@@ -48,7 +46,13 @@ export class GenerateFormComponent {
       this.http
         .post(
           'http://localhost:3000/form',
-          { form: formData, owner: this.user._id, title: this.formTitle, editors:this.editors, status:this.status },
+          {
+            form: formData,
+            owner: this.user._id,
+            title: this.formTitle,
+            editors: this.editors,
+            status: this.status,
+          },
           { headers: header }
         )
         .subscribe(
@@ -59,14 +63,15 @@ export class GenerateFormComponent {
             console.log(err);
           }
         );
+    } else if (formData.length === 0) {
+      alert(
+        "Form must contain atleast one Question (Make sure you click 'Done' after making change)"
+      );
+    } else {
+      alert(
+        "Question and type are necessary fields (Make sure you click 'Done' after making change)"
+      );
     }
-    else if(formData.length === 0){
-      alert("Form must contain atleast one Question (Make sure you click 'Done' after making change)")
-    }
-    else{
-      alert("Question and type are necessary fields (Make sure you click 'Done' after making change)")
-    }
-
   }
 
   addField() {

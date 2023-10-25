@@ -6,10 +6,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrls: ['./form-card.component.css'],
 })
 export class FormCardComponent {
-  question: String = '';
-  type: String = 'text';
-  isRequired = false;
-  options = ['Option'];
+  @Input() question: String = '';
+  @Input() type: String = 'text';
+  @Input() isRequired = false;
+  @Input() options = ['Option'];
 
   @Output() fieldDetails: EventEmitter<any> = new EventEmitter<any>();
   @Output() removeField: EventEmitter<any> = new EventEmitter<any>()
