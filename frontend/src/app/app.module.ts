@@ -21,6 +21,7 @@ import { VerifyAccountComponent } from './pages/verify-account/verify-account.co
 import { MiddlerComponent } from './components/middler/middler.component';
 import { AddEditorsComponent } from './components/add-editors/add-editors.component';
 import { EditFormComponent } from './pages/edit-form/edit-form.component';
+import { ChatComponent } from './components/chat/chat.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { EditFormComponent } from './pages/edit-form/edit-form.component';
     MiddlerComponent,
     AddEditorsComponent,
     EditFormComponent,
+    ChatComponent,
   ],
   imports: [
     BrowserModule,

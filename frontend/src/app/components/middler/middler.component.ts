@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Event, NavigationEnd, Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { Subscription } from 'rxjs';
+import { SocketService } from 'src/app/services/socket.service';
 import { UserInfo } from 'src/app/services/user-info.service';
 
 @Component({
@@ -17,7 +18,8 @@ export class MiddlerComponent {
   constructor(
     private user: UserInfo,
     private cookieService: CookieService,
-    private router: Router
+    private router: Router,
+    private socket: SocketService
   ) {
     this.eventSubscripiton = router.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd) {
@@ -42,11 +44,11 @@ export class MiddlerComponent {
     if (this.eventSubscripiton) {
       this.eventSubscripiton.unsubscribe();
     }
-    // const token = this.currentRoute.split('/').splice(-1)[0];
-    // console.log(3,token);
-    // this.cookieService.set('token', token);
+   
     console.log(3, this.cookieService.get('token'));
     const payload = JSON.parse(atob(this.token.split('.')[1]));
+    // Connect to websocket
+    this.socket.connect(payload._id)
     this.user.token = this.token;
     this.user.loggedIn = true;
     this.user['_id'] = payload._id;

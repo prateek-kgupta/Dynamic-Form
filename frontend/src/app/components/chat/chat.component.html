@@ -1,0 +1,21 @@
+<div class="container chat-container border mb-2 p-3">
+    <div class="d-flex justify-content-between py-2">
+        <input type="text" placeholder="Message..." class="form-control" [(ngModel)]="message">
+        <button class="btn btn-success ms-2" (click)="sendMessage()">Send</button>
+    </div>
+    <div class="d-flex flex-column chat-area" #chatArea>
+        <ng-container *ngFor="let chat of chats">
+            <div class="my-2 w-75 position-relative px-2 chat-bubble"
+                [ngClass]="{'bubble-right': chat.from === currentUser, 'bubble-left': chat.from !== currentUser}">
+                <div class="ms-auto p-1 username">{{chat.name}}</div>
+                <div class="row  ms-auto p-1 pt-4 pb-2 fs-6 text-left">{{chat.message}}</div>
+                <!-- <input type="text" class="form-control" [value]="chat.message" disabled> -->
+            </div>
+        </ng-container>
+    </div>
+    <div class="d-flex justify-content-between bg-light py-2">
+        <button class="btn w-100" (click)="changeSubscription()" [ngClass]="{'btn-danger': isSubscribed, 'btn-primary': !isSubscribed}">
+            {{isSubscribed ? 'Unsubscribe' : 'Get notifications for this form'}}</button>
+        <!-- <button class="btn btn-danger">Unsubscribe Notifications</button> -->
+    </div>
+</div>

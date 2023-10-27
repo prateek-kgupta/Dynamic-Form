@@ -9,13 +9,33 @@
       <form class="d-flex m-auto" role="search">
         <h1 class="text-secondary mb-0">{{name}}</h1>
       </form>
+
       <ul class="navbar-nav my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+
+        <li class="nav-item mx-2 dropdown">
+          <a class="nav-link dropdown-toggle" id="notificationList" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-bell me-1 position-relative">
+              <span
+                class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-none rounded-circle"
+                *ngIf="notificationList.length">
+                <span class="visually-hidden">New alerts</span>
+              </span>
+            </i>Notifications</a>
+
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationList">
+            <li><a class="dropdown-item"><button class="btn btn-danger w-100">Delete All</button></a></li>
+            <li *ngFor="let notification of notificationList">
+              <a class="dropdown-item">A new notification from {{notification.roomId}}</a>
+            </li>
+          </ul>
+        </li>
+
+
         <li class="nav-item mx-2">
           <a class="nav-link" routerLinkActive="active" routerLink="/create"
             [routerLinkActiveOptions]="{exact: true}">New Form</a>
         </li>
         <li class="nav-item ">
-          <!-- <span class="btn btn-secondary ms-2">Login</span> -->
           <button class="btn btn-outline-secondary ms-3" aria-current="page" (click)="changeLog()">{{token? 'Log Out':
             'Login'}}</button>
         </li>

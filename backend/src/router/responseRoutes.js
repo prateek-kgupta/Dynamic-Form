@@ -10,6 +10,7 @@ const router = express.Router();
 router.use(auth);
 
 router.post("/", validateResponse, async (req, res) => {
+  console.log(req.body)
   const responseData = req.body;
   responseData.responderId = req.user._id;
   const response = new Response(responseData);

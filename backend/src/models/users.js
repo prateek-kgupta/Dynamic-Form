@@ -33,7 +33,11 @@ const userSchema = new mongoose.Schema({
   isVerified: {
     type: Boolean,
     default: false
-  }
+  },
+  notifications: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Form"
+  }]
 });
 
 userSchema.virtual("forms", {

@@ -1,0 +1,47 @@
+.chat-container {
+  width: 480px;
+  min-height: 480px;
+  max-height: 680px;
+  background-color: rgb(255, 255, 255, 0.75);
+  display: flex;
+  flex-direction: column-reverse;
+  border-radius: 13px;
+}
+
+.chat-area {
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.username{
+    position: absolute;
+    font-size: small;
+    /* font-weight: bold; */
+    color: rgb(235, 232, 232);
+}
+
+.chat-bubble{
+  background-color: rgb(86, 128, 206);
+  color: white;
+  text-align: left;
+  border-radius: 17px;
+}
+
+
+.bubble-left{
+    margin-right: auto;
+}
+
+.bubble-right{
+    margin-left: auto;
+    background-color: rgb(64, 156, 126)
+}
+
+::-webkit-scrollbar {
+  width: 0.2rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #818a8f;
+  border-radius: 17px;
+}

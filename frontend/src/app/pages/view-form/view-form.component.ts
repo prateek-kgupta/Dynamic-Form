@@ -20,6 +20,7 @@ export class ViewFormComponent {
   formTemplate: any = [];
   formTitle: string = 'Form Title';
   Draft: boolean = false
+  showChat: boolean = false
   responseForm: FormGroup = new FormGroup({
     fields: new FormArray([]),
   });
