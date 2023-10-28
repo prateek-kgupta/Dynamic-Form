@@ -7,7 +7,6 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class SocketService {
-  // isLoggedIn: boolean;
   chats = {};
   subscribedForms = [];
   socket;
@@ -44,7 +43,6 @@ export class SocketService {
     });
 
     this.socket.on('subForms', ({ result }) => {
-      // console.log(result)
       this.subscribedForms = result.map((room) => room.roomId);
       console.log(this.subscribedForms);
     });

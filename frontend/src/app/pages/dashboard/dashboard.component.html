@@ -55,7 +55,7 @@
                 <div class="col-lg-3 d-flex align-items-center justify-content-center"><span class="titles me-2">
                         Questions: </span> {{form.numberOfQues}}</div>
             </div>
-            <div class="row mt-4 action-buttons">
+            <div class="row mt-4 action-buttons" *ngIf="filterOn === 'owner' || filterOn === 'shared'">
                 <button class="btn btn-primary" [disabled]="currentUser !== form.owner"
                     (click)="submissions($event, form._id)" data-bs-toggle="modal"
                     data-bs-target="#verticalCenteredModal">Show
@@ -78,7 +78,7 @@
                     (click)="deleteForm(form._id)">Delete Form</button>
             </div>
             <div class="row mt-2  action-buttons">
-                <button class="btn btn-outline-success response-button" (click)="openForm(form._id)"
+                <button class="btn btn-success response-button" (click)="openForm(form._id)"
                 [disabled]="form['status'] !== 'Active'">Fill Response</button>
             </div>
         </div>

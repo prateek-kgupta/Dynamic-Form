@@ -59,8 +59,18 @@ export class AuthorizationComponent {
             this.router.navigate(['/']);
           },
           (err) => {
-            alert('Invalid Credentials');
-            console.log(err);
+            if (err.status === 403) {
+              this.loginForm.patchValue({
+                password: ''
+              })
+              alert(
+                'Please verify your account through the link received on email'
+              );
+              this.loginForm.markAsUntouched();
+            } else {
+              alert('Invalid Credentials');
+              console.log(err);
+            }
           }
         );
     } else {
@@ -78,8 +88,24 @@ export class AuthorizationComponent {
         .post('http://localhost:3000/user/signup', { name, email, password })
         .subscribe(
           (res) => {
-            this.setToken(res['token']);
-            this.router.navigate(['/']);
+            console.log(res);
+            console.log(res['message']);
+            if (res['message'] === 'Success') {
+              console.log('Before marking', this.signupForm);
+              // console.log(this.signupForm.get('controls'))
+              this.signupForm.setValue({
+                name: '',
+                email: '',
+                password: '',
+                rePass: ''
+              })
+              this.signupForm.markAsUntouched();
+              console.log('After marking', this.signupForm);
+              alert(
+                'You have registered succesfully. Verify yourself using the link sent to you on email and login again'
+              );
+              this.login = true;
+            }
           },
           (err) => {
             alert('Make sure email is valid or is not registered earlier');
@@ -103,6 +129,6 @@ export class AuthorizationComponent {
   }
 
   googleSignIn() {
-    window.location.href=`http://localhost:3000/user/auth/google`
+    window.location.href = `http://localhost:3000/user/auth/google`;
   }
 }

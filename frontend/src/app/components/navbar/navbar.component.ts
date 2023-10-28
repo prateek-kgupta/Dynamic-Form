@@ -1,4 +1,4 @@
-import { CSP_NONCE, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { SocketService } from 'src/app/services/socket.service';
@@ -11,8 +11,8 @@ import { UserInfo } from 'src/app/services/user-info.service';
 })
 export class NavbarComponent {
   token: string = '';
-  name: string = ''
-  notificationList = []
+  name: string = '';
+  notificationList = [];
 
   constructor(
     private cookieService: CookieService,
@@ -28,58 +28,54 @@ export class NavbarComponent {
     if (this.token) {
       const payload = JSON.parse(atob(this.token.split('.')[1]));
       // Connect to the socket service
-      console.log("This ngOnInit of navbar has run")
-      this.socket.connect(payload._id)
-      console.log("Above socket also must have been run")
-      // 
-      
-      this.notificationList = this.socket.notifications 
+      this.socket.connect(payload._id);
+      //
+
+      this.notificationList = this.socket.notifications;
 
       // set values to user-info service
       this.user.token = this.token;
       this.user.loggedIn = true;
       this.user['_id'] = payload._id;
       this.user['name'] = payload.name;
-      this.name = payload.name
+      this.name = payload.name;
       // ADD OBSERVABLE TO GET NEW NOTIFICATIONS
       this.socket.on('notifications').subscribe(() => {
-        this.notificationList = this.socket.notifications
-      })
+        this.notificationList = this.socket.notifications;
+      });
     }
   }
 
   changeLog() {
     if (this.token) {
-      console.log("Delete token")
+      console.log('Delete token');
       this.cookieService.delete('token', '/');
-      console.log(this.cookieService.get('token'))
+      console.log(this.cookieService.get('token'));
 
-      this.name = ''
+      this.name = '';
       this.token = '';
       // Clear User Service
       this.user.token = '';
       this.user['_id'] = '';
       this.user['name'] = '';
       this.router.navigate(['/']);
-      this.user.loggedIn = false
+      this.user.loggedIn = false;
       // Clear Socket Service
-      this.socket.chats = {}
-      this.socket.subscribedForms = []
-      this.socket.notifications = []
-      this.socket.disconnect()
+      this.socket.chats = {};
+      this.socket.subscribedForms = [];
+      this.socket.notifications = [];
+      this.socket.disconnect();
       // Clear notification list in this component
-      this.notificationList = []
-      
-      console.log(this.socket)
+      this.notificationList = [];
+
+      console.log(this.socket);
     } else {
       this.router.navigate(['/login']);
     }
   }
 
-  ngDoCheck(){
-    this.token = this.user.token
-    this.name = this.user.name
-    // this.socket.isLoggedIn = this.token !== ''
-    // console.log(this.socket.isLoggedIn)
+  ngDoCheck() {
+    this.token = this.user.token;
+    this.name = this.user.name;
   }
 }

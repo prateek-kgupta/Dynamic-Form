@@ -21,14 +21,12 @@ router.post("/signup", validateSignUp, async (req, res) => {
   user.isVerified = false;
   try {
     await user.save();
-    const token = await user.generateAuthToken();
-    console.log(token);
     // Mail slug to the email id provided by user
     const mailStatus = verificationMail(user.slug, user.email, user.name);
     console.log(mailStatus);
     res
       .status(201)
-      .send({ _id: user.id, name: user.name, email: user.email, token });
+      .send({ message: 'Success' });
   } catch (e) {
     res.status(400).send(e);
   }
@@ -40,6 +38,9 @@ router.post("/login", validateLogin, async (req, res) => {
       req.body.email,
       req.body.password
     );
+    if(!user.isVerified){
+      return res.status(403).send({message: 'Verify account'})
+    }
     const token = await user.generateAuthToken();
     res.send({ _id: user.id, name: user.name, email: user.email, token });
   } catch (e) {
