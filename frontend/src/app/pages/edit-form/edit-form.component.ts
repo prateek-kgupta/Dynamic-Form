@@ -10,6 +10,7 @@ import { UserInfo } from 'src/app/services/user-info.service';
   styleUrls: ['./edit-form.component.css'],
 })
 export class EditFormComponent {
+  formModal: boolean = false;
   loading: Boolean = false
   formId: string = '';
   formTemplate: any = [];
@@ -134,7 +135,10 @@ export class EditFormComponent {
       .subscribe(
         (res) => {
           this.loading = false
-          this.router.navigate([`/form/${res['_id']}`]);
+          if(this.status === 'Draft'){
+            this.formModal = true
+          }
+          else{this.router.navigate([`/form/${res['_id']}`]);}
           // console.log(res);
         },
         (err) => {

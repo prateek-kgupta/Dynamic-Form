@@ -112,6 +112,10 @@ export class SocketService {
     this.socket.emit('getNotifications', {userId})
   }
 
+  disconnect(){
+    this.socket.disconnect()
+  }
+
   on(event: string): Observable<any> {
     return new Observable((observer) => {
       this.socket.on(event, (data: any) => {

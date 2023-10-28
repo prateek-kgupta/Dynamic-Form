@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { CSP_NONCE, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { SocketService } from 'src/app/services/socket.service';
@@ -53,14 +53,24 @@ export class NavbarComponent {
       console.log("Delete token")
       this.cookieService.delete('token', '/');
       console.log(this.cookieService.get('token'))
+
       this.name = ''
       this.token = '';
+      // Clear User Service
       this.user.token = '';
       this.user['_id'] = '';
       this.user['name'] = '';
       this.router.navigate(['/']);
       this.user.loggedIn = false
-      console.log(this.user)
+      // Clear Socket Service
+      this.socket.chats = {}
+      this.socket.subscribedForms = []
+      this.socket.notifications = []
+      this.socket.disconnect()
+      // Clear notification list in this component
+      this.notificationList = []
+      
+      console.log(this.socket)
     } else {
       this.router.navigate(['/login']);
     }

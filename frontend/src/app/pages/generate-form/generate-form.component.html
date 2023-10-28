@@ -1,32 +1,59 @@
-<div class="card py-3 px-5 mb-4 d-md-flex flex-row justify-content-between align-items-center">
-    <input type="text" class="h1 me-4 mb-0" style="outline: none;" [(ngModel)]="formTitle" />
-    <button class="btn btn-primary w-25" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions"
-        aria-controls="offcanvasWithBothOptions">Add Editors</button>
-
-</div>
-<form class="pb-3" [formGroup]="generateForm" (ngSubmit)="onSubmit()">
-    <div formArrayName="fields">
-        <ng-container *ngFor="let iterator of generateForm.get('fields')['controls']; index as i">
-            <app-form-card (fieldDetails)="createControls($event, i)" (removeField)="deleteField( i)"></app-form-card>
-        </ng-container>
-    </div>
-    <button type="button" class="btn btn-outline-primary w-25 me-2" (click)="addField()">
-        <i class="fa-solid fa-plus me-2"></i>Add new field
-    </button>
-    <button type="button" class="btn btn-secondary w-25 me-2" (click)="saveDraft()">
-        <i class="fa-solid fa-file-pen me-2"></i>
-        Save as Draft
-    </button>
-    <button class="btn btn-success w-25 ms-2">Submit</button>
-</form>
-
-<div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
-    aria-labelledby="offcanvasWithBothOptionsLabel">
-    <div class="offcanvas-header">
-        <h3 class="offcanvas-title mb-0" id="offcanvasWithBothOptionsLabel">Add Editors to your Form</h3>
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body">
-        <app-add-editors [editors]="editors"></app-add-editors>
+<div class="d-flex justify-content-center" *ngIf="loading">
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
     </div>
 </div>
+
+<ng-container *ngIf="!loading">
+    <div class="card py-3 px-5 mb-4 d-md-flex flex-row justify-content-between align-items-center">
+        <input type="text" class="h1 me-4 mb-0" style="outline: none;" [(ngModel)]="formTitle"
+            placeholder="Form Title is required" />
+        <button class="btn btn-primary w-25" type="button" data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">Add Editors</button>
+    </div>
+    <form class="pb-3" [formGroup]="generateForm" (ngSubmit)="onSubmit()">
+        <div formArrayName="fields">
+            <ng-container *ngFor="let iterator of generateForm.get('fields')['controls']; index as i">
+                <app-form-card (fieldDetails)="createControls($event, i)"
+                    (removeField)="deleteField( i)"></app-form-card>
+            </ng-container>
+        </div>
+        <button type="button" class="btn btn-outline-primary w-25 me-2" (click)="addField()">
+            <i class="fa-solid fa-plus me-2"></i>Add new field
+        </button>
+        <button type="button" class="btn btn-secondary w-25 me-2" (click)="saveDraft()">
+            <i class="fa-solid fa-file-pen me-2"></i>
+            Save as Draft
+        </button>
+        <button class="btn btn-success w-25 ms-2">Submit</button>
+    </form>
+
+    <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
+        aria-labelledby="offcanvasWithBothOptionsLabel">
+        <div class="offcanvas-header">
+            <h3 class="offcanvas-title mb-0" id="offcanvasWithBothOptionsLabel">Add Editors to your Form</h3>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <app-add-editors [editors]="editors"></app-add-editors>
+        </div>
+    </div>
+
+
+    <div class="backdrop" *ngIf="formModal">
+        <div class="modal fade show d-block" #myModal>
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-body py-4 fs-5">
+                        Your form has been saved to database </div>
+                    <div class="modal-footer py-0">
+                        <button type="button" class="btn btn-secondary" [routerLink]="'/form/edit/'+formId">Edit
+                            Form</button>
+                        <button type="button" class="btn btn-primary" routerLink="/">Go to Dashboard</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-container>

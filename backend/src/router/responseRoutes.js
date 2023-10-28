@@ -2,24 +2,36 @@ const express = require("express");
 const auth = require("../middleware/auth");
 const Response = require("../models/responses");
 const mongoose = require("mongoose");
-const {responseMail} = require("../mailer");
+const { responseMail } = require("../mailer");
 
 const { validateResponse } = require("../middleware/validateResponse");
+const Form = require("../models/forms");
 
 const router = express.Router();
 router.use(auth);
 
 router.post("/", validateResponse, async (req, res) => {
-  console.log(req.body)
+  console.log(req.body);
   const responseData = req.body;
   responseData.responderId = req.user._id;
+  console.log("Form id: ",responseData.formId)
+  const formStatus = await Form.findById( responseData.formId ).select({
+    'status': 1,
+    '_id': 0,
+  });
+  console.log("Status of the form: ",formStatus);
+  if (formStatus.status !== "Active") {
+    res
+      .status(400)
+      .send({ message: "This form is not accepting any submissions" });
+  }
   const response = new Response(responseData);
   try {
     const result = await response.save();
-    const email = req.user.email
+    const email = req.user.email;
     if (result) {
-      const mailStatus = responseMail(email)
-      console.log(mailStatus)
+      const mailStatus = responseMail(email);
+      console.log(mailStatus);
     }
     res.status(200).send(result);
   } catch (e) {

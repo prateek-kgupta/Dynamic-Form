@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserInfo } from 'src/app/services/user-info.service';
@@ -10,17 +10,21 @@ import { UserInfo } from 'src/app/services/user-info.service';
   styleUrls: ['./generate-form.component.css'],
 })
 export class GenerateFormComponent {
+  loading: boolean = false
   formTitle: string = 'Form Name...';
   editors = [];
   status: string = 'Active';
+  formModal: boolean = false;
+  formId: string = ''
   generateForm: FormGroup = new FormGroup({
     fields: new FormArray([new FormControl(null)]),
   });
+  @ViewChild('myModal') myModal: ElementRef;
 
   constructor(
     private http: HttpClient,
     private user: UserInfo,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -39,6 +43,7 @@ export class GenerateFormComponent {
     const formData = this.generateForm.get('fields').value;
     // console.log(formData, this.generateForm.valid);
     if (formData.length > 0 && this.generateForm.valid) {
+      this.loading = true
       const header = new HttpHeaders().set(
         'Authorization',
         `Bearer ${this.user.token}`
@@ -57,21 +62,33 @@ export class GenerateFormComponent {
         )
         .subscribe(
           (res) => {
-            this.router.navigate([`/form/${res['_id']}`]);
+            this.loading = false
+            console.log(res)
+            this.formId = res['_id']
+            if (this.status === 'Draft') {
+              // Modal for confirmation of form saved
+              this.formModal = true;
+            } else {
+              this.router.navigate([`/form/${res['_id']}`]);
+            }
           },
           (err) => {
+            this.loading = false
             console.log(err);
           }
         );
     } else if (formData.length === 0) {
+      // this.loading = false
       alert(
         "Form must contain atleast one Question (Make sure you click 'Done' after making change)"
       );
     } else {
+      // this.loading = false
       alert(
         "Question and type are necessary fields (Make sure you click 'Done' after making change)"
       );
     }
+    
   }
 
   addField() {
@@ -96,4 +113,10 @@ export class GenerateFormComponent {
     formArray.removeAt(index);
     console.log(this.generateForm);
   }
+
+  editForm() {
+    this.router.navigate([`/form/edit/${this.formId}`])
+  }
+
+  // routeToDashboard(){}
 }

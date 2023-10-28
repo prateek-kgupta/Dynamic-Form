@@ -1,44 +1,52 @@
-<div class="card py-3 px-5 mb-4">
-    <h1 class="mb-0">{{formTitle}}</h1>
-</div>
-<!-- Response form -->
-<form [formGroup]="responseForm" (ngSubmit)="onSubmit()">
-    <!-- Form Array -->
-    <div formArrayName="fields">
-        <!-- Iterate over form template -->
-        <div class="card py-3 px-5 my-2" *ngFor="let field of formTemplate; index as i" [formGroupName]="i">
-            <ng-container formArrayName="response">
-                <h3 class="fw-bold">{{field.ques}}<span class="text-danger" *ngIf="field.isRequired"> *</span></h3>
-                <!-- text/number -->
-                <ng-container *ngIf="field.type === 'text' || field.type === 'number'">
-                    <input class="form-control" [type]="field.type" formControlName="0"
-                        placeholder="Your answer here...">
-                </ng-container>
-                <!-- Radio -->
-                <div *ngIf="field.type === 'radio'">
-                    <label class="form-check-label ms-4" *ngFor="let option of field.options; let j = index">
-                        <input type="radio" class="form-check-input" [value]="option" formControlName="0"> {{ option }}
-                    </label>
-                </div>
-                <!-- Checkbox -->
-                <div *ngIf="field.type === 'checkbox'">
-                    <label class="form-check-label ms-4" *ngFor="let option of field.options; let j = index">
-                        <input type="checkbox" [formControlName]="j"> {{ option }}
-                    </label>
-                </div>
-                <!-- Dropdown -->
-                <ng-container *ngIf="field.type === 'dropdown'">
-                    <select class="form-select" formControlName="0">
-                        <option *ngFor="let option of field.options" [value]="option">{{option}}</option>
-                    </select>
-                </ng-container>
-            </ng-container>
-        </div>
+<div class="d-flex justify-content-center" *ngIf="loading">
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
     </div>
-    <button class="btn w-100 btn-success">Submit</button>
-</form>
-
-<div class="chat-area text-end">
-    <app-chat *ngIf="showChat" [roomID]="formId"></app-chat>
-    <button class="btn btn-primary " (click)="showChat = !showChat"><i class="fa-solid fa-comments"></i> Chat</button>
 </div>
+
+<ng-container *ngIf="!loading">
+    <div class="card py-3 px-5 mb-4">
+        <h1 class="mb-0">{{formTitle}}</h1>
+    </div>
+    <!-- Response form -->
+    <form [formGroup]="responseForm" (ngSubmit)="onSubmit()">
+        <!-- Form Array -->
+        <div formArrayName="fields">
+            <!-- Iterate over form template -->
+            <div class="card py-3 px-5 my-2" *ngFor="let field of formTemplate; index as i" [formGroupName]="i">
+                <ng-container formArrayName="response">
+                    <h3 class="fw-bold">{{field.ques}}<span class="text-danger" *ngIf="field.isRequired"> *</span></h3>
+                    <!-- text/number -->
+                    <ng-container *ngIf="field.type === 'text' || field.type === 'number'">
+                        <input class="form-control" [type]="field.type" formControlName="0"
+                            placeholder="Your answer here...">
+                    </ng-container>
+                    <!-- Radio -->
+                    <div *ngIf="field.type === 'radio'">
+                        <label class="form-check-label ms-4" *ngFor="let option of field.options; let j = index">
+                            <input type="radio" class="form-check-input" [value]="option" formControlName="0"> {{ option }}
+                        </label>
+                    </div>
+                    <!-- Checkbox -->
+                    <div *ngIf="field.type === 'checkbox'">
+                        <label class="form-check-label ms-4" *ngFor="let option of field.options; let j = index">
+                            <input type="checkbox" [formControlName]="j"> {{ option }}
+                        </label>
+                    </div>
+                    <!-- Dropdown -->
+                    <ng-container *ngIf="field.type === 'dropdown'">
+                        <select class="form-select" formControlName="0">
+                            <option *ngFor="let option of field.options" [value]="option">{{option}}</option>
+                        </select>
+                    </ng-container>
+                </ng-container>
+            </div>
+        </div>
+        <button class="btn w-100 btn-success">Submit</button>
+    </form>
+    
+    <div class="chat-area text-end">
+        <app-chat *ngIf="showChat" [roomID]="formId"></app-chat>
+        <button class="btn btn-primary " (click)="showChat = !showChat"><i class="fa-solid fa-comments"></i> Chat</button>
+    </div>
+</ng-container>

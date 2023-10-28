@@ -19,13 +19,19 @@ export class ViewFormComponent {
   formId: string = '';
   formTemplate: any = [];
   formTitle: string = 'Form Title';
-  Draft: boolean = false
-  showChat: boolean = false
+  Draft: boolean = false;
+  showChat: boolean = false;
+  status: string = ''
+  loading: boolean = false
   responseForm: FormGroup = new FormGroup({
     fields: new FormArray([]),
   });
 
-  constructor(private user: UserInfo, private http: HttpClient, private router: Router) {}
+  constructor(
+    private user: UserInfo,
+    private http: HttpClient,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.formId = this.user.routeInfo.split('/').slice(-1)[0];
@@ -34,6 +40,7 @@ export class ViewFormComponent {
   }
 
   getFormTemplate(formId: string = this.formId) {
+    this.loading = true
     const header = new HttpHeaders().set(
       'Authorization',
       `Bearer ${this.user.token}`
@@ -43,8 +50,13 @@ export class ViewFormComponent {
       .subscribe(
         // RECIEVING FORM DATA FROM BACKEND
         (res) => {
+          this.loading = false
           console.log(res);
-          this.Draft = res['status'] === 'Draft'
+          this.Draft = res['status'] === 'Draft';
+          this.status = res['status']
+          if(this.status !== 'Active'){
+            this.router.navigate(['/'])
+          }
           this.formTemplate = res['form'];
           this.formTitle = res['title'];
           this.responseForm = new FormGroup({
@@ -85,6 +97,10 @@ export class ViewFormComponent {
           });
         },
         (err) => {
+          console.log(err)
+          alert(err.error.message)
+          this.router.navigate(['/'])
+          this.loading = false
           console.log('Error', err);
         }
       );
@@ -120,15 +136,14 @@ export class ViewFormComponent {
         .subscribe(
           (res) => {
             console.log(res);
-            this.router.navigate([`/response/${res['_id']}`])
+            this.router.navigate([`/response/${res['_id']}`]);
           },
           (err) => {
             console.log(err);
           }
         );
-    }
-    else{
-      alert("Must answer every required fields")
+    } else {
+      alert('Must answer every required fields');
     }
   }
 }

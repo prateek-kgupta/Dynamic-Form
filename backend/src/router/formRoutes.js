@@ -53,7 +53,7 @@ router.get("/", async (req, res) => {
 
 
 router.get("/:formId", auth, async (req, res) => {
-  let searchQuery = { _id: req.params.formId };
+  let searchQuery = { _id: req.params.formId, status: 'Active' };
 
   try {
     const form = await Form.findOne(searchQuery);

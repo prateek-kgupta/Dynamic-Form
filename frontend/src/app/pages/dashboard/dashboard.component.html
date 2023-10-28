@@ -72,10 +72,14 @@
                                 (click)="changeStatus(form._id,'Inactive', form.status)">Inactive</a></li>
                     </ul>
                 </div>
+                <button class="btn btn-info"
+                    [disabled]="currentUser !== form.owner || form.status !== 'Draft'">Edit Form</button>
                 <button class="btn btn-danger" [disabled]="currentUser !== form.owner"
                     (click)="deleteForm(form._id)">Delete Form</button>
-                <button class="btn btn-outline-success" (click)="openForm(form._id)"
-                    [disabled]="form['status'] !== 'Active'">Fill Response</button>
+            </div>
+            <div class="row mt-2  action-buttons">
+                <button class="btn btn-outline-success response-button" (click)="openForm(form._id)"
+                [disabled]="form['status'] !== 'Active'">Fill Response</button>
             </div>
         </div>
     </ng-container>

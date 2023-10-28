@@ -10,7 +10,6 @@
         <button class="btn btn-primary w-25" type="button" data-bs-toggle="offcanvas"
             data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions" [disabled]="!isOwner">Add
             Editors</button>
-    
     </div>
     <form class="pb-3" [formGroup]="editForm" (ngSubmit)="onSubmit('Active')">
         <div formArrayName="fields">
@@ -40,6 +39,23 @@
         </div>
         <div class="offcanvas-body">
             <app-add-editors [editorsDisplay]="editorsDisplay" [editors]="editors"></app-add-editors>
+        </div>
+    </div>
+
+
+    <div class="backdrop" *ngIf="formModal">
+        <div class="modal fade show d-block" #myModal>
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-body py-4 fs-5">
+                        Your updates has been saved </div>
+                    <div class="modal-footer py-0">
+                        <button type="button" class="btn btn-secondary" (click)="formModal = false">Continue Editing</button>
+                        <button type="button" class="btn btn-primary" routerLink="/">Go to Dashboard</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </ng-container>
