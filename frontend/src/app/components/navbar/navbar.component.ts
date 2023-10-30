@@ -74,6 +74,21 @@ export class NavbarComponent {
     }
   }
 
+  goToChat(formId){
+    // ROUTE TO ABOVE FORM ID
+    // REMOVE THIS ELEMENT FROM NOTIFICATION LIST
+    console.log("goToChat called")
+    this.notificationList = this.notificationList.filter(notification => notification.roomId !== formId)
+    this.socket.removeNotification(formId)
+    this.router.navigate([`/form/${formId}`])
+    // REMOVE THIS ELEMENT FROM USERS->NOTIFICATIONS
+  }
+
+  deleteAll(){
+    this.notificationList = []
+   this.socket.removeAllNotifications() 
+  }
+
   ngDoCheck() {
     this.token = this.user.token;
     this.name = this.user.name;

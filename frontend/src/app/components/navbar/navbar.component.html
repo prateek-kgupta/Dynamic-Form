@@ -23,9 +23,10 @@
             </i>Notifications</a>
 
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationList">
-            <li><a class="dropdown-item"><button class="btn btn-danger w-100">Delete All</button></a></li>
-            <li *ngFor="let notification of notificationList">
-              <a class="dropdown-item">A new notification from {{notification.roomId}}</a>
+            <li class="px-2"><button class="btn btn-danger w-100" (click)="deleteAll()">Delete All</button></li>
+            <li><hr class="dropdown-divider"></li>
+            <li class="mt-1" *ngFor="let notification of notificationList, index as i">
+              <a class="dropdown-item py-2" (click)="goToChat(notification.roomId)">A new notification from the form named "{{notification.roomName}}"</a>
             </li>
           </ul>
         </li>

@@ -24,9 +24,7 @@ router.post("/signup", validateSignUp, async (req, res) => {
     // Mail slug to the email id provided by user
     const mailStatus = verificationMail(user.slug, user.email, user.name);
     console.log(mailStatus);
-    res
-      .status(201)
-      .send({ message: 'Success' });
+    res.status(201).send({ message: "Success" });
   } catch (e) {
     res.status(400).send(e);
   }
@@ -38,8 +36,8 @@ router.post("/login", validateLogin, async (req, res) => {
       req.body.email,
       req.body.password
     );
-    if(!user.isVerified){
-      return res.status(403).send({message: 'Verify account'})
+    if (!user.isVerified) {
+      return res.status(403).send({ message: "Verify account" });
     }
     const token = await user.generateAuthToken();
     res.send({ _id: user.id, name: user.name, email: user.email, token });
@@ -123,7 +121,7 @@ router.get("/getUser/:searchTerm", async (req, res) => {
         { name: { $regex: searchTerm, $options: "i" } },
         { email: { $regex: searchTerm, $options: "i" } },
       ],
-    }).select('_id name email');
+    }).select("_id name email");
     console.log(result);
     res.send(result);
   } catch (e) {

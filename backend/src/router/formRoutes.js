@@ -5,6 +5,7 @@ const Form = require("../models/forms");
 const Response = require("../models/responses");
 const auth = require("../middleware/auth");
 const { validateForm } = require("../middleware/validateForm");
+const Chat = require("../models/chat");
 
 const router = express.Router();
 
@@ -15,6 +16,12 @@ router.post("/", auth, validateForm, async (req, res) => {
   const form = new Form(req.body);
   try {
     const result = await form.save();
+    console.log(result)
+    const author = result.owner
+    const roomName = result.title
+    const roomId = result._id
+    const chat = new Chat({roomId, roomName, author, subscribedUsers: [author], chat: []})
+    chat.save()
     res.status(201).send(result);
   } catch (e) {
     res.status(400).send(e);
@@ -165,5 +172,7 @@ router.delete("/delete/:formId", auth, async (req, res) => {
     res.status(400).send(e);
   }
 });
+
+
 
 module.exports = router;

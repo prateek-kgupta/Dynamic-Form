@@ -48,21 +48,21 @@ export class ChatComponent {
   }
 
   sendMessage() {
-    this.socket.sendMessage(this.roomID, this.message);
-    this.message = '';
-    this.scrollDiv();
+    if (this.message.trim()) {
+      this.socket.sendMessage(this.roomID, this.message);
+      this.message = '';
+      this.scrollDiv();
+    }
   }
 
-  changeSubscription(){
-    console.log("chang")
-    if(this.isSubscribed){
-      this.socket.unsubscribeForm(this.roomID)
-    }
-    else{
-      this.socket.subscribeForm(this.roomID)
+  changeSubscription() {
+    if (this.isSubscribed) {
+      this.socket.unsubscribeForm(this.roomID);
+    } else {
+      this.socket.subscribeForm(this.roomID);
     }
     // Change subscription status for the UI
-    this.isSubscribed = !this.isSubscribed
+    this.isSubscribed = !this.isSubscribed;
   }
 
   scrollDiv() {
@@ -70,5 +70,10 @@ export class ChatComponent {
       const chatArea = this.chatArea.nativeElement;
       chatArea.scrollTop = chatArea.scrollHeight;
     }, 10);
+  }
+
+  ngOnDestroy() {
+    console.log('Component dismounted');
+    this.socket.leaveChatRoom(this.roomID, this.isSubscribed);
   }
 }

@@ -6,6 +6,13 @@ const chatSchema = new mongoose.Schema({
     required: true,
     ref: "Form",
   },
+  roomName: {
+    type: String
+  },
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
+  },
   subscribedUsers: [
     {
       type: mongoose.Schema.Types.ObjectId,

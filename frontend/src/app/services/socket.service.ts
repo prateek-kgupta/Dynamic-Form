@@ -15,19 +15,24 @@ export class SocketService {
   constructor(private user: UserInfo) {
     this.socket = io('http://localhost:3000', { autoConnect: false });
 
-    this.socket.on('newMessage', ({ roomId, message, from, name }) => {
-      console.log('Message received from backend\n', {
-        roomId,
-        message,
-        from,
-        name,
-      });
-      if (!this.chats[roomId]) {
-        this.chats[roomId] = [];
+    this.socket.on(
+      'newMessage',
+      ({ roomId, message, from, name }, acknowledgement) => {
+        console.log('Message received from backend\n', {
+          roomId,
+          message,
+          from,
+          name,
+        });
+        if (!this.chats[roomId]) {
+          this.chats[roomId] = [];
+        }
+        this.chats[roomId].push({ from, name, message });
+        console.log(this.chats[roomId]);
+        console.log('Message received on frontend for', this.user.name);
+        acknowledgement(this.user._id);
       }
-      this.chats[roomId].push({ from, name, message });
-      console.log(this.chats[roomId]);
-    });
+    );
 
     this.socket.on('allMessages', ({ allChats }) => {
       console.log('Getting new messages');
@@ -47,22 +52,24 @@ export class SocketService {
       console.log(this.subscribedForms);
     });
 
-    this.socket.on('notifications', ({ roomId }) => {
-      this.notifications.push({ roomId });
+    this.socket.on('notifications', ({ roomId, roomName }) => {
+      this.notifications.push({ roomId, roomName });
       console.log(this.notifications);
     });
 
-    this.socket.on('dbNotifications', ({result}) => {
-      console.log("In the dbNotification listener")
-      console.log(result)
-      const notificationArray = result.notifications
-      for(let notification of notificationArray){
-        console.log(notification)
-        this.notifications.push({roomId: notification})
+    this.socket.on('dbNotifications', ({ result }) => {
+      console.log('In the dbNotification listener');
+      console.log(result);
+      const notificationArray = result.notifications;
+      for (let notification of notificationArray) {
+        console.log(notification);
+        this.notifications.push({
+          roomId: notification.roomId,
+          roomName: notification.roomName,
+        });
       }
-      console.log(this.notifications)
-
-    })
+      console.log(this.notifications);
+    });
   }
 
   joinRoom(roomId) {
@@ -74,6 +81,10 @@ export class SocketService {
     if (!this.chats[roomId]) {
       this.chats[roomId] = [];
     }
+  }
+
+  leaveChatRoom(roomId, isSubscribed){
+    this.socket.emit('leaveChatRoom', {roomId, isSubscribed})
   }
 
   sendMessage(roomId, message) {
@@ -94,24 +105,37 @@ export class SocketService {
     });
   }
 
-  unsubscribeForm(roomId){
-    this.socket.emit('unsubscribe', {roomId, userId: this.user._id})
-    this.subscribedForms = this.subscribedForms.filter(formId => formId !== roomId)
+  unsubscribeForm(roomId) {
+    this.socket.emit('unsubscribe', { roomId, userId: this.user._id });
+    this.subscribedForms = this.subscribedForms.filter(
+      (formId) => formId !== roomId
+    );
   }
 
-  subscribeForm(roomId){
-    this.socket.emit('subscribe', {roomId, userId: this.user._id})
-    this.subscribedForms.push(roomId)
+  subscribeForm(roomId) {
+    this.socket.emit('subscribe', { roomId, userId: this.user._id });
+    this.subscribedForms.push(roomId);
+  }
+
+  removeNotification(roomId){
+    this.socket.emit('removeNotification', {roomId,userId: this.user._id})
+    console.log("remove notification called")
+    this.notifications = this.notifications.filter(notification => notification.roomId !== roomId)
+  }
+
+  removeAllNotifications(){
+    this.socket.emit('removeAllNotifications', {userId: this.user._id})
+    this.notifications = []
   }
 
   connect(userId) {
     this.socket.connect();
     this.socket.emit('getSubForms', { userId });
-    this.socket.emit('getNotifications', {userId})
+    this.socket.emit('getNotifications', { userId });
   }
 
-  disconnect(){
-    this.socket.disconnect()
+  disconnect() {
+    this.socket.disconnect();
   }
 
   on(event: string): Observable<any> {
