@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { SocketService } from 'src/app/services/socket.service';
 import { UserInfo } from 'src/app/services/user-info.service';
 
 @Component({
@@ -25,6 +26,7 @@ export class GenerateFormComponent {
     private http: HttpClient,
     private user: UserInfo,
     private router: Router,
+    private socket: SocketService
   ) {}
 
   ngOnInit() {
@@ -64,6 +66,9 @@ export class GenerateFormComponent {
           (res) => {
             this.loading = false
             console.log(res)
+            // SOCKET MANAGEMENT FOR NEW FORM
+            this.socket.subscribedForms.push(res['_id'])
+            this.socket.joinNotify(res['_id'])
             this.formId = res['_id']
             if (this.status === 'Draft') {
               // Modal for confirmation of form saved

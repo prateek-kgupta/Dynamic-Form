@@ -9,14 +9,16 @@
   <table class="table table-striped table-hover border mt-4" #responseSheet>
     <thead>
       <tr>
-        <th [attr.colspan]="sheetData.headings?.length" class="text-center fs-5">{{sheetData.title}}</th>
+        <th [attr.colspan]="sheetData.headings?.length+1" class="text-center fs-5">{{sheetData.title}} ({{sheetData.responses?.length}})</th>
       </tr>
       <tr>
+        <th scope="col">#</th>
         <th scope="col" *ngFor="let heading of sheetData.headings">{{heading}}</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let row of sheetData.responses">
+      <tr *ngFor="let row of sheetData.responses, index as i">
+        <th scope="row">{{i+1}}</th>
         <td *ngFor="let col of row">{{col}}</td>
       </tr>
     </tbody>

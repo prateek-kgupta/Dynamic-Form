@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Socket, io } from 'socket.io-client';
+import {  io } from 'socket.io-client';
 import { UserInfo } from './user-info.service';
 import { Observable } from 'rxjs';
 
@@ -126,6 +126,10 @@ export class SocketService {
   removeAllNotifications(){
     this.socket.emit('removeAllNotifications', {userId: this.user._id})
     this.notifications = []
+  }
+
+  joinNotify(roomId){
+    this.socket.emit('JoinNotifyRoom', {roomId})
   }
 
   connect(userId) {

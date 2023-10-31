@@ -22,6 +22,10 @@ module.exports = (io) => {
       }
     });
 
+    socket.on('JoinNotifyRoom', ({roomId}) => {
+      socket.join(`${roomId}_notify`)
+    })
+
     //  NEW MESSAGE
     socket.on("newMessage", async ({ roomId, message, from, name }) => {
       console.log("Getting new message");

@@ -21,7 +21,7 @@ router.post("/", auth, validateForm, async (req, res) => {
     const roomName = result.title
     const roomId = result._id
     const chat = new Chat({roomId, roomName, author, subscribedUsers: [author], chat: []})
-    chat.save()
+    await chat.save()
     res.status(201).send(result);
   } catch (e) {
     res.status(400).send(e);
@@ -161,7 +161,8 @@ router.delete("/delete/:formId", auth, async (req, res) => {
     });
     console.log(form)
     if (form) {
-      const response = await Response.deleteMany({ formId: req.params.formId });
+      await Response.deleteMany({ formId: req.params.formId });
+      await Chat.findOneAndDelete({roomId: req.params.formId}) 
     }
     else{
       return res.status(400).send({message: "Invalid Request"})
