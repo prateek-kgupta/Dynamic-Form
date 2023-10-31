@@ -16,15 +16,15 @@
           <a class="nav-link dropdown-toggle" id="notificationList" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="fa-solid fa-bell me-1 position-relative">
               <span
-                class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-none rounded-circle"
-                *ngIf="notificationList.length">
-                <span class="visually-hidden">New alerts</span>
+                class="position-absolute top-0 start-100 translate-middle border border-none rounded-circle notification-dot"
+                *ngIf="notificationList.length" #notificationDot>
+                <span class="visually-hidden"></span>
               </span>
             </i>Notifications</a>
 
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationList">
             <li class="px-2"><button class="btn btn-danger w-100" (click)="deleteAll()">Delete All</button></li>
-            <li><hr class="dropdown-divider"></li>
+            <li *ngIf="notificationList.length"><hr class="dropdown-divider"></li>
             <li class="mt-1" *ngFor="let notification of notificationList, index as i">
               <a class="dropdown-item py-2" (click)="goToChat(notification.roomId)">A new notification from the form named "{{notification.roomName}}"</a>
             </li>

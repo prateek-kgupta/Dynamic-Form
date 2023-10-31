@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { SocketService } from 'src/app/services/socket.service';
@@ -13,15 +13,14 @@ export class NavbarComponent {
   token: string = '';
   name: string = '';
   notificationList = [];
+  @ViewChild('notificationDot') notificationDot: ElementRef;
 
   constructor(
     private cookieService: CookieService,
     private router: Router,
     private user: UserInfo,
     private socket: SocketService
-  ) {
-    // this.token = this.user.token
-  }
+  ) {}
 
   ngOnInit() {
     this.token = this.cookieService.get('token');
@@ -29,7 +28,6 @@ export class NavbarComponent {
       const payload = JSON.parse(atob(this.token.split('.')[1]));
       // Connect to the socket service
       this.socket.connect(payload._id);
-      //
 
       this.notificationList = this.socket.notifications;
 
@@ -42,6 +40,14 @@ export class NavbarComponent {
       // ADD OBSERVABLE TO GET NEW NOTIFICATIONS
       this.socket.on('notifications').subscribe(() => {
         this.notificationList = this.socket.notifications;
+        const notificationDot = this.notificationDot
+          .nativeElement as HTMLElement;
+        notificationDot.style.backgroundColor = 'red';
+        notificationDot.style.padding = '0.35rem';
+        setTimeout(() => {
+          notificationDot.style.backgroundColor = '#DC3545';
+          notificationDot.style.padding = '0.25rem';
+        }, 500);
       });
     }
   }
@@ -74,19 +80,19 @@ export class NavbarComponent {
     }
   }
 
-  goToChat(formId){
-    // ROUTE TO ABOVE FORM ID
-    // REMOVE THIS ELEMENT FROM NOTIFICATION LIST
-    console.log("goToChat called")
-    this.notificationList = this.notificationList.filter(notification => notification.roomId !== formId)
-    this.socket.removeNotification(formId)
-    this.router.navigate([`/form/${formId}`])
-    // REMOVE THIS ELEMENT FROM USERS->NOTIFICATIONS
+  goToChat(formId) {
+    this.notificationList = this.notificationList.filter(
+      (notification) => notification.roomId !== formId
+    );
+    this.socket.removeNotification(formId);
+    this.router.navigate([`/form/${formId}`]);
   }
 
-  deleteAll(){
-    this.notificationList = []
-   this.socket.removeAllNotifications() 
+  deleteAll() {
+    if (this.notificationList.length) {
+      this.notificationList = [];
+      this.socket.removeAllNotifications();
+    }
   }
 
   ngDoCheck() {
