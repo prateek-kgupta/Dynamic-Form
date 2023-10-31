@@ -22,6 +22,7 @@ import { MiddlerComponent } from './components/middler/middler.component';
 import { AddEditorsComponent } from './components/add-editors/add-editors.component';
 import { EditFormComponent } from './pages/edit-form/edit-form.component';
 import { ChatComponent } from './components/chat/chat.component';
+import { ResponseSheetComponent } from './pages/response-sheet/response-sheet.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { ChatComponent } from './components/chat/chat.component';
     AddEditorsComponent,
     EditFormComponent,
     ChatComponent,
+    ResponseSheetComponent,
   ],
   imports: [
     BrowserModule,

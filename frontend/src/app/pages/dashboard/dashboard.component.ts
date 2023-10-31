@@ -15,6 +15,7 @@ export class DashboardComponent {
   currentUser: string = '';
   filterOn: string = 'available';
   modalData: any = [];
+  modalFormId: string = ''
 
   constructor(
     private http: HttpClient,
@@ -39,7 +40,6 @@ export class DashboardComponent {
       (res) => {
         console.log(res);
         this.allForms = res;
-        // this.formList = res;
         this.formList = this.allForms.filter((form) => form.status !== 'Draft');
         console.log(this.formList);
         this.currentUser = this.user._id;
@@ -57,6 +57,7 @@ export class DashboardComponent {
 
   submissions(event, formId) {
     event.stopPropagation();
+    this.modalFormId = formId
     // API call to get each submissions
     const header = new HttpHeaders().set(
       'Authorization',
@@ -163,5 +164,9 @@ export class DashboardComponent {
         alert("Something went wrong")
       }
     })
+  }
+  
+  responseChart(){
+    this.router.navigate([`/response-sheet/${this.modalFormId}`])
   }
 }

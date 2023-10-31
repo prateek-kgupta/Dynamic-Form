@@ -11,6 +11,7 @@ import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { VerifyAccountComponent } from './pages/verify-account/verify-account.component';
 import { MiddlerComponent } from './components/middler/middler.component';
 import { EditFormComponent } from './pages/edit-form/edit-form.component';
+import { ResponseSheetComponent } from './pages/response-sheet/response-sheet.component';
 
 const routes: Routes = [
   {path: '', component: DashboardComponent},
@@ -19,6 +20,7 @@ const routes: Routes = [
   {path: 'form/:formId', component: ViewFormComponent, canActivate: [RouteGuardService]},
   {path: 'form/edit/:formId', component: EditFormComponent, canActivate: [RouteGuardService]},
   {path: 'response/:responseId', component: ShowResponseComponent, canActivate: [RouteGuardService]},
+  {path: 'response-sheet/:formId', component: ResponseSheetComponent, canActivate: [RouteGuardService]},
   {path: 'verify/:slug', component: VerifyAccountComponent},
   {path: 'middler/:token', component: MiddlerComponent},
   {path: '**', component: NotFoundComponent}

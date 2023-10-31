@@ -14,12 +14,10 @@ router.post("/", validateResponse, async (req, res) => {
   console.log(req.body);
   const responseData = req.body;
   responseData.responderId = req.user._id;
-  console.log("Form id: ",responseData.formId)
-  const formStatus = await Form.findById( responseData.formId ).select({
-    'status': 1,
-    '_id': 0,
+  const formStatus = await Form.findById(responseData.formId).select({
+    status: 1,
+    _id: 0,
   });
-  console.log("Status of the form: ",formStatus);
   if (formStatus.status !== "Active") {
     res
       .status(400)
@@ -31,7 +29,6 @@ router.post("/", validateResponse, async (req, res) => {
     const email = req.user.email;
     if (result) {
       const mailStatus = responseMail(email);
-      console.log(mailStatus);
     }
     res.status(200).send(result);
   } catch (e) {
@@ -43,7 +40,6 @@ router.post("/", validateResponse, async (req, res) => {
 router.get("/:responseId", async (req, res) => {
   const responseId = new mongoose.Types.ObjectId(req.params.responseId);
   const seekerId = req.user._id;
-  console.log(responseId, "\n", seekerId);
 
   try {
     const result = await Response.aggregate([
@@ -73,7 +69,6 @@ router.get("/:responseId", async (req, res) => {
       },
     ]);
 
-    console.log(result);
     if (result.length === 0) {
       return res.status(404).send();
     }
@@ -87,8 +82,6 @@ router.get("/:responseId", async (req, res) => {
 router.get("/responses/:formId", async (req, res) => {
   const formId = new mongoose.Types.ObjectId(req.params.formId);
   const seekerId = req.user._id;
-  console.log(formId);
-  console.log(seekerId);
   try {
     const result = await Response.aggregate([
       {
@@ -101,11 +94,6 @@ router.get("/responses/:formId", async (req, res) => {
       },
       { $match: { formId: formId } },
       {
-        $addFields: {
-          timestamp: { $toDate: "$_id" }, // Extract and add the timestamp field
-        },
-      },
-      {
         $project: {
           _id: 1,
           formId: 1,
@@ -114,9 +102,93 @@ router.get("/responses/:formId", async (req, res) => {
         },
       },
     ]);
-    // console.log(result)
     res.status(200).send(result);
   } catch (e) {
+    res.status(400).send(e);
+  }
+});
+
+// Get all response to a form
+router.get("/allResponses/:formId", async (req, res) => {
+  const formId = new mongoose.Types.ObjectId(req.params.formId);
+  const seekerId = req.user._id;
+
+  try {
+    const result = await Response.aggregate([
+      {
+        $lookup: {
+          from: "forms",
+          localField: "formId",
+          foreignField: "_id",
+          as: "forms",
+        },
+      },
+      { $unwind: "$forms" },
+      {
+        $lookup: {
+          from: "users",
+          localField: "responderId",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: "$user" },
+      {
+        $match: {
+          "forms.owner": seekerId,
+          formId: formId,
+        },
+      },
+      {
+        $project: {
+          "responses.response": 1,
+          formName: "$forms.title",
+          "forms.form.ques": 1,
+          "forms.form.options": 1,
+          "forms.form.type": 1,
+          title: "$forms.title",
+          name: "$user.name",
+          email: "$user.email",
+        },
+      },
+    ]);
+
+    if (result.length === 0) {
+      return res.status(404).send();
+    }
+    const sheetData = { responses: [], title: result[0].title };
+    sheetData.headings = ["Name", "Email"];
+    const dataType = [];
+    const options = [];
+    for (const quesDetails of result[0].forms.form) {
+      sheetData.headings.push(quesDetails.ques);
+      dataType.push(quesDetails.type);
+      options.push(quesDetails.options);
+    }
+    for (const i in result) {
+      const responseData = result[i];
+      sheetData.responses.push([]);
+      const currentResponse = sheetData.responses[i];
+      currentResponse.push(responseData.name);
+      currentResponse.push(responseData.email);
+      for (const j in responseData.responses) {
+        if (dataType[j] === "checkbox") {
+          const ans = [];
+          const response = responseData.responses[j].response;
+          for (const k in options[j]) {
+            if (response[k] === "true") {
+              ans.push(options[j][k]);
+            }
+          }
+          currentResponse.push(ans);
+        } else {
+          currentResponse.push(responseData.responses[j].response);
+        }
+      }
+    }
+    return res.status(200).send(sheetData);
+  } catch (e) {
+    console.log(e);
     res.status(400).send(e);
   }
 });
