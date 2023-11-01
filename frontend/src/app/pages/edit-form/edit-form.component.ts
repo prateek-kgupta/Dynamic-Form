@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserInfo } from 'src/app/services/user-info.service';
@@ -11,14 +11,15 @@ import { UserInfo } from 'src/app/services/user-info.service';
 })
 export class EditFormComponent {
   formModal: boolean = false;
-  loading: Boolean = false
+  loading: Boolean = false;
   formId: string = '';
   formTemplate: any = [];
   isOwner: Boolean = false;
   formTitle: string = 'Form Title';
   status: string = 'Active';
   editors = [];
-  editorsDisplay = []
+  editorsDisplay = [];
+  hasLoaded: boolean = false;
   editForm: FormGroup = new FormGroup({
     fields: new FormArray([]),
   });
@@ -35,8 +36,27 @@ export class EditFormComponent {
     this.getFormTemplate(this.formId);
   }
 
+  ngOnDestroy() {
+    if (this.hasLoaded) {
+      const header = new HttpHeaders().set(
+        'Authorization',
+        `Bearer ${this.user.token}`
+      );
+      this.http
+        .get(`http://localhost:3000/form/editFailed/${this.formId}`, {
+          headers: header,
+        })
+        .subscribe(
+          (res) => console.log('This response is after destruction SUCCESS'),
+          (err) => console.log('Something went wrong', err)
+        );
+    } else {
+      console.log("Didn't go for API Call");
+    }
+  }
+
   getFormTemplate(formId: string = this.formId) {
-    this.loading = true
+    this.loading = true;
     const header = new HttpHeaders().set(
       'Authorization',
       `Bearer ${this.user.token}`
@@ -48,11 +68,12 @@ export class EditFormComponent {
       .subscribe(
         // RECIEVING FORM DATA FROM BACKEND
         (res) => {
-          console.log(res)
+          console.log(res);
+          this.hasLoaded = true;
           // Assigning values to the local variables
           this.formTemplate = res['form'];
           this.formTitle = res['title'];
-          this.editorsDisplay = res['editors']
+          this.editorsDisplay = res['editors'];
           this.editors = this.editorsDisplay.map((editor) => editor._id);
           this.isOwner = res['isOwner'];
           this.editForm = new FormGroup({
@@ -71,24 +92,25 @@ export class EditFormComponent {
               })
             );
           });
-          this.loading = false
+          this.loading = false;
         },
         (err) => {
-          if(err.status = 404){
-            alert("No data found!!")
-            this.router.navigate(['/'])
+          console.log(err);
+          if (err.status === 404) {
+            alert('No data found!!');
+            this.router.navigate(['/']);
+          } else if (err.status === 403) {
+            alert(err.error.message);
+            this.router.navigate(['/']);
+          } else {
+            alert('Something went wrong');
           }
-          else{
-            alert("Something went wrong")
-          }
-          this.loading = false
+          this.loading = false;
           console.log('Error', err);
-
         }
       );
   }
 
-  // nullValidator() {}
 
   addField() {
     (<FormArray>this.editForm.get('fields')).push(
@@ -114,39 +136,59 @@ export class EditFormComponent {
   }
 
   onSubmit(status = 'Draft') {
+    this.status = status;
     if (!this.isOwner && status === 'Active') {
-      status = 'Draft';
+      this.status = 'Draft';
     }
     const editData = {
       form: this.editForm.value.fields,
       status,
       title: this.formTitle,
     };
-    if(this.isOwner){
-      editData['editors'] = this.editors
+    if (this.isOwner) {
+      editData['editors'] = this.editors;
     }
     const header = new HttpHeaders().set(
       'Authorization',
       `Bearer ${this.user.token}`
     );
-    this.loading = true
+    this.loading = true;
     this.http
-      .patch(`http://localhost:3000/form/edit/${this.formId}`, editData, {headers: header})
+      .patch(`http://localhost:3000/form/edit/${this.formId}`, editData, {
+        headers: header,
+      })
       .subscribe(
         (res) => {
-          this.loading = false
-          if(this.status === 'Draft'){
-            this.formModal = true
+          this.loading = false;
+          if (this.status === 'Draft') {
+            this.formModal = true;
+          } else {
+            this.router.navigate([`/form/${res['_id']}`]);
           }
-          else{this.router.navigate([`/form/${res['_id']}`]);}
-          // console.log(res);
         },
         (err) => {
-          alert("Something went wrong")
-          this.loading = false
-          this.router.navigate(['/'])
+          alert('Something went wrong');
+          this.loading = false;
+          this.router.navigate(['/']);
           console.log(err);
         }
       );
+  }
+
+
+  // CHANGE FORM ISEDITING STATUS TO TRUE IF WINDOW IS CLOSED
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification(): void {
+    if (this.hasLoaded) {
+      const header = new HttpHeaders().set(
+        'Authorization',
+        `Bearer ${this.user.token}`
+      );
+      this.http
+        .get(`http://localhost:3000/form/editFailed/${this.formId}`, {
+          headers: header,
+        }).subscribe()
+        
+    }
   }
 }

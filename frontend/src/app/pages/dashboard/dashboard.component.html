@@ -9,7 +9,7 @@
         [ngClass]="{'btn-outline-warning': filterOn !== 'shared', 'btn-warning': filterOn === 'shared'}"
         [disabled]="!currentUser" (click)="filterForm('shared')">Shared forms</button>
 
-    
+
 
     <!-- Modal for showing responses -->
     <div class="modal fade" id="verticalCenteredModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
@@ -32,7 +32,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" (click)="responseChart()" data-bs-dismiss="modal">Show Response Chart</button>
+                    <button type="button" class="btn btn-success" (click)="responseChart()" data-bs-dismiss="modal">Show
+                        Response Chart</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -74,13 +75,14 @@
                     </ul>
                 </div>
                 <button class="btn btn-info"
-                    [disabled]="currentUser !== form.owner || form.status !== 'Draft'">Edit Form</button>
+                    [disabled]="(currentUser !== form.owner && !form.editors.includes(currentUser)) || form.status !== 'Draft'" [routerLink]="'/form/edit/'+form._id">Edit
+                    Form</button>
                 <button class="btn btn-danger" [disabled]="currentUser !== form.owner"
                     (click)="deleteForm(form._id)">Delete Form</button>
             </div>
             <div class="row mt-2  action-buttons">
                 <button class="btn btn-success response-button" (click)="openForm(form._id)"
-                [disabled]="form['status'] !== 'Active'">Fill Response</button>
+                    [disabled]="form['status'] !== 'Active'">Fill Response</button>
             </div>
         </div>
     </ng-container>
