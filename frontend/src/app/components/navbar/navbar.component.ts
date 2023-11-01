@@ -40,13 +40,16 @@ export class NavbarComponent {
       // ADD OBSERVABLE TO GET NEW NOTIFICATIONS
       this.socket.on('notifications').subscribe(() => {
         this.notificationList = this.socket.notifications;
-        const notificationDot = this.notificationDot.nativeElement as HTMLElement;
-        notificationDot.style.backgroundColor = 'red';
-        notificationDot.style.padding = '0.35rem';
-        setTimeout(() => {
-          notificationDot.style.backgroundColor = '#DC3545';
-          notificationDot.style.padding = '0.25rem';
-        }, 500);
+        if (this.notificationDot) {
+          const notificationDot = this.notificationDot
+            .nativeElement as HTMLElement;
+          notificationDot.style.backgroundColor = 'red';
+          notificationDot.style.padding = '0.35rem';
+          setTimeout(() => {
+            notificationDot.style.backgroundColor = '#DC3545';
+            notificationDot.style.padding = '0.25rem';
+          }, 500);
+        }
       });
     }
   }

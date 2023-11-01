@@ -40,8 +40,8 @@ export class ViewFormComponent {
     console.log(this.formId);
     this.getFormTemplate(this.formId);
     this.eventSubscription = this.router.events.subscribe((event: Event) => {
-      console.log("Route Called")
       if (event instanceof NavigationEnd) {
+        console.log("Route Called")
         const newFormId = event.url.split('/').slice(-1)[0];
         if (newFormId !== this.formId) {
           this.formId = newFormId;
