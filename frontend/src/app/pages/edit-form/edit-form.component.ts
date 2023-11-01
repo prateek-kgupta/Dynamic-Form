@@ -111,7 +111,6 @@ export class EditFormComponent {
       );
   }
 
-
   addField() {
     (<FormArray>this.editForm.get('fields')).push(
       new FormGroup({
@@ -175,10 +174,9 @@ export class EditFormComponent {
       );
   }
 
-
   // CHANGE FORM ISEDITING STATUS TO TRUE IF WINDOW IS CLOSED
   @HostListener('window:beforeunload', ['$event'])
-  unloadNotification(): void {
+  onWindowClose(): void {
     if (this.hasLoaded) {
       const header = new HttpHeaders().set(
         'Authorization',
@@ -187,8 +185,8 @@ export class EditFormComponent {
       this.http
         .get(`http://localhost:3000/form/editFailed/${this.formId}`, {
           headers: header,
-        }).subscribe()
-        
+        })
+        .subscribe();
     }
   }
 }

@@ -40,8 +40,7 @@ export class NavbarComponent {
       // ADD OBSERVABLE TO GET NEW NOTIFICATIONS
       this.socket.on('notifications').subscribe(() => {
         this.notificationList = this.socket.notifications;
-        const notificationDot = this.notificationDot
-          .nativeElement as HTMLElement;
+        const notificationDot = this.notificationDot.nativeElement as HTMLElement;
         notificationDot.style.backgroundColor = 'red';
         notificationDot.style.padding = '0.35rem';
         setTimeout(() => {

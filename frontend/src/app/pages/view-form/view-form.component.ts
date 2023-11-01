@@ -7,7 +7,8 @@ import {
   FormGroup,
   ValidationErrors,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router, Event } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { UserInfo } from 'src/app/services/user-info.service';
 
 @Component({
@@ -21,11 +22,12 @@ export class ViewFormComponent {
   formTitle: string = 'Form Title';
   Draft: boolean = false;
   showChat: boolean = false;
-  status: string = ''
-  loading: boolean = false
+  status: string = '';
+  loading: boolean = false;
   responseForm: FormGroup = new FormGroup({
     fields: new FormArray([]),
   });
+  eventSubscription: Subscription;
 
   constructor(
     private user: UserInfo,
@@ -37,10 +39,36 @@ export class ViewFormComponent {
     this.formId = this.user.routeInfo.split('/').slice(-1)[0];
     console.log(this.formId);
     this.getFormTemplate(this.formId);
+    this.eventSubscription = this.router.events.subscribe((event: Event) => {
+      console.log("Route Called")
+      if (event instanceof NavigationEnd) {
+        const newFormId = event.url.split('/').slice(-1)[0];
+        if (newFormId !== this.formId) {
+          this.formId = newFormId;
+          this.formTemplate = [];
+          this.formTitle = 'Form Title';
+          this.Draft = false;
+          this.showChat = false;
+          this.status = '';
+          this.loading = false;
+          this.responseForm = new FormGroup({
+            fields: new FormArray([]),
+          });
+
+          this.getFormTemplate(this.formId);
+        }
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.eventSubscription) {
+      this.eventSubscription.unsubscribe();
+    }
   }
 
   getFormTemplate(formId: string = this.formId) {
-    this.loading = true
+    this.loading = true;
     const header = new HttpHeaders().set(
       'Authorization',
       `Bearer ${this.user.token}`
@@ -50,12 +78,12 @@ export class ViewFormComponent {
       .subscribe(
         // RECIEVING FORM DATA FROM BACKEND
         (res) => {
-          this.loading = false
+          this.loading = false;
           console.log(res);
           this.Draft = res['status'] === 'Draft';
-          this.status = res['status']
-          if(this.status !== 'Active'){
-            this.router.navigate(['/'])
+          this.status = res['status'];
+          if (this.status !== 'Active') {
+            this.router.navigate(['/']);
           }
           this.formTemplate = res['form'];
           this.formTitle = res['title'];
@@ -97,10 +125,10 @@ export class ViewFormComponent {
           });
         },
         (err) => {
-          console.log(err)
-          alert(err.error.message)
-          this.router.navigate(['/'])
-          this.loading = false
+          console.log(err);
+          alert(err.error.message);
+          this.router.navigate(['/']);
+          this.loading = false;
           console.log('Error', err);
         }
       );

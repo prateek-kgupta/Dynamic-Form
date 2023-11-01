@@ -43,7 +43,6 @@ export class GenerateFormComponent {
 
   onSubmit() {
     const formData = this.generateForm.get('fields').value;
-    // console.log(formData, this.generateForm.valid);
     if (formData.length > 0 && this.generateForm.valid) {
       this.loading = true
       const header = new HttpHeaders().set(
@@ -83,12 +82,10 @@ export class GenerateFormComponent {
           }
         );
     } else if (formData.length === 0) {
-      // this.loading = false
       alert(
         "Form must contain atleast one Question (Make sure you click 'Done' after making change)"
       );
     } else {
-      // this.loading = false
       alert(
         "Question and type are necessary fields (Make sure you click 'Done' after making change)"
       );
@@ -122,6 +119,4 @@ export class GenerateFormComponent {
   editForm() {
     this.router.navigate([`/form/edit/${this.formId}`])
   }
-
-  // routeToDashboard(){}
 }
