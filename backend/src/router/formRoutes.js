@@ -158,7 +158,7 @@ router.patch("/edit/:formId", auth, async (req, res) => {
 });
 
 // IF FORM CLOSES WHILE EDITING
-router.get("/editFailed/:formId", async (req, res) => {
+router.get("/editFailed/:formId", auth, async (req, res) => {
   console.log("Calling edit failed")
   try {
     const result = await Form.findByIdAndUpdate(req.params.formId, {

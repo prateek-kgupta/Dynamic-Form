@@ -19,11 +19,8 @@ export class AddEditorsComponent {
   getUser() {
     // http request to get user from database
     // const token = this.user.token;
-    const header = new HttpHeaders().set(
-      'Authorization',
-      `Bearer ${this.user.token}`
-    );
-    this.http.get(`http://localhost:3000/user/getUser/${this.searchTerm}`, { headers: header }).subscribe(
+    
+    this.http.get(`http://localhost:3000/user/getUser/${this.searchTerm}`).subscribe(
       (res) => {
         console.log(res);
         this.searchResults = res
@@ -38,11 +35,9 @@ export class AddEditorsComponent {
     this.editors.push(user._id)
     this.editorsDisplay.push(user)
     this.showUsers = false
-    // this.searchResults.splice(index, 1)
   }
 
   removeEditor(index){
-    // this.searchResults.push(this.editorsDisplay[index])
     this.editors.splice(index, 1)
     this.editorsDisplay.splice(index, 1)
 

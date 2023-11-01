@@ -57,14 +57,9 @@ export class EditFormComponent {
 
   getFormTemplate(formId: string = this.formId) {
     this.loading = true;
-    const header = new HttpHeaders().set(
-      'Authorization',
-      `Bearer ${this.user.token}`
-    );
+
     this.http
-      .get(`http://localhost:3000/form/edit/${formId}`, {
-        headers: header,
-      })
+      .get(`http://localhost:3000/form/edit/${formId}`, )
       .subscribe(
         // RECIEVING FORM DATA FROM BACKEND
         (res) => {
@@ -147,15 +142,10 @@ export class EditFormComponent {
     if (this.isOwner) {
       editData['editors'] = this.editors;
     }
-    const header = new HttpHeaders().set(
-      'Authorization',
-      `Bearer ${this.user.token}`
-    );
+
     this.loading = true;
     this.http
-      .patch(`http://localhost:3000/form/edit/${this.formId}`, editData, {
-        headers: header,
-      })
+      .patch(`http://localhost:3000/form/edit/${this.formId}`, editData)
       .subscribe(
         (res) => {
           this.loading = false;

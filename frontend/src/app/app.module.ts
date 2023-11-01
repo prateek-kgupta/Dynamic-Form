@@ -1,8 +1,10 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
+
+import { AuthInterceptor } from './interceptor/auth.interceptor';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -50,7 +52,16 @@ import { ResponseSheetComponent } from './pages/response-sheet/response-sheet.co
     ReactiveFormsModule,
     HttpClientModule,
   ],
-  providers: [CookieService, UserInfo, RouteGuardService],
+  providers: [
+    CookieService,
+    UserInfo,
+    RouteGuardService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

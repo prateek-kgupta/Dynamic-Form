@@ -23,15 +23,9 @@ export class ResponseSheetComponent {
   }
   getSheetData() {
     this.loading = true
-    const header = new HttpHeaders().set(
-      'Authorization',
-      `Bearer ${this.user.token}`
-    );
 
     this.http
-      .get(`http://localhost:3000/response/allResponses/${this.formId}`, {
-        headers: header,
-      })
+      .get(`http://localhost:3000/response/allResponses/${this.formId}`)
       .subscribe(
         (res) => {
           this.loading = false

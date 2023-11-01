@@ -21,18 +21,12 @@ export class ShowResponseComponent {
   }
 
   getFormResponse(responseId = this.responseId) {
-    const header = new HttpHeaders().set(
-      'Authorization',
-      `Bearer ${this.user.token}`
-    );
 
-    this.http.get(`http://localhost:3000/response/${responseId}`, {headers: header})
+    this.http.get(`http://localhost:3000/response/${responseId}`)
     .subscribe((res)=>{
       this.responseData = res[0]['responses']
       this.formTitle = res[0]['forms'][0]['title']
       this.formToResponse = res[0]['forms'][0]['form']
-      // console.log("response",this.responseData)
-      // console.log("form", this.formToResponse)
     },(err) => {
       console.log(err)
     })

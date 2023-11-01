@@ -15,7 +15,7 @@ export class DashboardComponent {
   currentUser: string = '';
   filterOn: string = 'available';
   modalData: any = [];
-  modalFormId: string = ''
+  modalFormId: string = '';
 
   constructor(
     private http: HttpClient,
@@ -31,12 +31,8 @@ export class DashboardComponent {
       '\n Searching for token from cookie\n',
       this.cookieService.get('token')
     );
-    const header = new HttpHeaders().set(
-      'Authorization',
-      `Bearer ${this.user.token}`
-    );
 
-    this.http.get(`http://localhost:3000/form`, { headers: header }).subscribe(
+    this.http.get(`http://localhost:3000/form`).subscribe(
       (res) => {
         console.log(res);
         this.allForms = res;
@@ -57,17 +53,11 @@ export class DashboardComponent {
 
   submissions(event, formId) {
     event.stopPropagation();
-    this.modalFormId = formId
+    this.modalFormId = formId;
     // API call to get each submissions
-    const header = new HttpHeaders().set(
-      'Authorization',
-      `Bearer ${this.user.token}`
-    );
 
     this.http
-      .get(`http://localhost:3000/response/responses/${formId}`, {
-        headers: header,
-      })
+      .get(`http://localhost:3000/response/responses/${formId}`)
       .subscribe(
         (res) => {
           console.log(res);
@@ -110,17 +100,11 @@ export class DashboardComponent {
     if (oldStatus === newStatus) {
       return;
     }
-    const header = new HttpHeaders().set(
-      'Authorization',
-      `Bearer ${this.user.token}`
-    );
 
     this.http
-      .patch(
-        `http://localhost:3000/form/editStatus/${formId}`,
-        { status: newStatus },
-        { headers: header }
-      )
+      .patch(`http://localhost:3000/form/editStatus/${formId}`, {
+        status: newStatus,
+      })
       .subscribe(
         (res) => {
           if (res['acknowledged']) {
@@ -145,28 +129,25 @@ export class DashboardComponent {
       );
   }
 
-  deleteForm(formId){
-    const header = new HttpHeaders().set(
-      'Authorization',
-      `Bearer ${this.user.token}`
+  deleteForm(formId) {
+    this.http.delete(`http://localhost:3000/form/delete/${formId}`).subscribe(
+      (res) => {
+        if (res['message'] === 'Deleted') {
+          this.formList = this.formList.filter((form) => form._id !== formId);
+          this.allForms = this.allForms.filter((form) => form._id !== formId);
+        }
+      },
+      (err) => {
+        if (err.error.message === 'Invalid Request') {
+          alert('Invalid Request');
+        } else {
+          alert('Something went wrong');
+        }
+      }
     );
-    this.http.delete(`http://localhost:3000/form/delete/${formId}`, {headers: header})
-    .subscribe((res) => {
-      if(res['message'] === 'Deleted'){
-        this.formList = this.formList.filter(form => form._id !== formId)
-        this.allForms = this.allForms.filter(form => form._id !== formId)
-      }
-    }, (err) => {
-      if(err.error.message === 'Invalid Request'){
-        alert("Invalid Request")
-      }
-      else{
-        alert("Something went wrong")
-      }
-    })
   }
-  
-  responseChart(){
-    this.router.navigate([`/response-sheet/${this.modalFormId}`])
+
+  responseChart() {
+    this.router.navigate([`/response-sheet/${this.modalFormId}`]);
   }
 }

@@ -69,12 +69,9 @@ export class ViewFormComponent {
 
   getFormTemplate(formId: string = this.formId) {
     this.loading = true;
-    const header = new HttpHeaders().set(
-      'Authorization',
-      `Bearer ${this.user.token}`
-    );
+
     this.http
-      .get(`http://localhost:3000/form/${formId}`, { headers: header })
+      .get(`http://localhost:3000/form/${formId}`)
       .subscribe(
         // RECIEVING FORM DATA FROM BACKEND
         (res) => {
