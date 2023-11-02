@@ -39,14 +39,9 @@ export class EditFormComponent {
 
   ngOnDestroy() {
     if (this.hasLoaded) {
-      const header = new HttpHeaders().set(
-        'Authorization',
-        `Bearer ${this.user.token}`
-      );
+      
       this.http
-        .get(`${environment.BACKEND_URL}/form/editFailed/${this.formId}`, {
-          headers: header,
-        })
+        .get(`${environment.BACKEND_URL}/form/editFailed/${this.formId}`)
         .subscribe(
           (res) => console.log('This response is after destruction SUCCESS'),
           (err) => console.log('Something went wrong', err)
@@ -174,9 +169,7 @@ export class EditFormComponent {
         `Bearer ${this.user.token}`
       );
       this.http
-        .get(`${environment.BACKEND_URL}/form/editFailed/${this.formId}`, {
-          headers: header,
-        })
+        .get(`${environment.BACKEND_URL}/form/editFailed/${this.formId}`, {headers: header})
         .subscribe();
     }
   }

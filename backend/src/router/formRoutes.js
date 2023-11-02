@@ -96,6 +96,7 @@ router.get("/edit/:formId", auth, async (req, res) => {
         $match: {
           _id: formId,
           $or: [{ owner: req.user._id }, { editors: req.user._id }],
+          status: "Draft",
         },
       },
       {
@@ -104,7 +105,7 @@ router.get("/edit/:formId", auth, async (req, res) => {
           owner: 1,
           form: 1,
           title: 1,
-          isEditing: 1,
+          isEditing: "$editStatus.isEditing",
           editors: 1,
           "user._id": 1,
           "user.name": 1,
@@ -119,11 +120,9 @@ router.get("/edit/:formId", auth, async (req, res) => {
       return res.status(404).send({ message: "No data found" });
     }
     if (form[0].isEditing) {
-      return res
-        .status(403)
-        .send({
-          message: "Unable to perform this action. Please try again later!!!",
-        });
+      return res.status(403).send({
+        message: "Unable to perform this action. Please try again later!!!",
+      });
     }
     if (form[0].owner.toString() === req.user._id.toString()) {
       // Owner
@@ -135,7 +134,9 @@ router.get("/edit/:formId", auth, async (req, res) => {
       delete result["user"];
     }
     console.log("Hello this is response to be sent", result);
-    await Form.findByIdAndUpdate(formId, { $set: { isEditing: true } });
+    await Form.findByIdAndUpdate(formId, {
+      $set: { editStatus: { isEditing: true, editor: req.user._id } },
+    });
     res.send(result);
   } catch (e) {
     console.log(e);
@@ -145,12 +146,13 @@ router.get("/edit/:formId", auth, async (req, res) => {
 
 // UPDATING THE EDITED FORM
 router.patch("/edit/:formId", auth, async (req, res) => {
-  const condition = { _id: req.params.formId };
-  const update = { $set: { ...req.body, isEditing: false } };
+  const condition = { _id: req.params.formId, "editStatus.editor": req.user._id };
+  const update = {
+    $set: { ...req.body, editStatus: { isEditing: false, editor: null } },
+  };
   console.log(update, "\n\n", condition);
   try {
     const result = await Form.updateOne(condition, update);
-    console.log(result);
     res.send(condition);
   } catch (e) {
     res.status(400).send(e);
@@ -159,11 +161,13 @@ router.patch("/edit/:formId", auth, async (req, res) => {
 
 // IF FORM CLOSES WHILE EDITING
 router.get("/editFailed/:formId", auth, async (req, res) => {
-  console.log("Calling edit failed")
+  console.log("Calling edit failed");
+  const formId = new mongoose.Types.ObjectId(req.params.formId);
   try {
-    const result = await Form.findByIdAndUpdate(req.params.formId, {
-      $set: { isEditing: false },
-    });
+    const result = await Form.findOneAndUpdate(
+      { _id: formId, "editStatus.editor": req.user._id },
+      { $set: { editStatus: { isEditing: false, editor: null } } },{new: true}
+    );
     res.send("Done");
   } catch (e) {
     console.log(e);
