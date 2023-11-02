@@ -7,6 +7,7 @@ import {
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserInfo } from '../services/user-info.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -18,7 +19,7 @@ export class AuthInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<unknown>> {
 
     let excludeHeader = false;
-    const backendUrl = 'http://localhost:3000'
+    const backendUrl = environment.BACKEND_URL
     const token = this.user.token
 
     // REQUESTS TO BE EXCLUDED

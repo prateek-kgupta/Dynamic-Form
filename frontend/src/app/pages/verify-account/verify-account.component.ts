@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { UserInfo } from 'src/app/services/user-info.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-verify-account',
@@ -19,7 +20,7 @@ export class VerifyAccountComponent {
     this.loading = true
     this.slug = this.user.routeInfo.split('/').slice(-1)[0];
     console.log(this.slug)
-    this.http.get(`http://localhost:3000/user/verify/${this.slug}`).subscribe(
+    this.http.get(`${environment.BACKEND_URL}/user/verify/${this.slug}`).subscribe(
       (res) => {
         this.loading = false
         console.log(res['status'], res['message']);

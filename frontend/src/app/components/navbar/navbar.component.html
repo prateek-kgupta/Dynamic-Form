@@ -3,12 +3,24 @@
     <a class="navbar-brand" routerLink="/">Dynamic Form</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
       aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
+      <span class="navbar-toggler-icon position-relative">
+      
+        <span
+        class="position-absolute top-0 start-100 translate-middle border border-none rounded-circle notification-dot"
+        *ngIf="notificationList.length" #notificationDotMobile>
+        <span class="visually-hidden"></span>
+      </span>
+    </span>
+      
     </button>
+    
+
     <div class="collapse navbar-collapse" id="navbarScroll">
       <form class="d-flex m-auto" role="search">
         <h1 class="text-secondary mb-0">{{name}}</h1>
       </form>
+
+      
 
       <ul class="navbar-nav my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
 
@@ -24,9 +36,12 @@
 
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationList">
             <li class="px-2"><button class="btn btn-danger w-100" (click)="deleteAll()">Delete All</button></li>
-            <li *ngIf="notificationList.length"><hr class="dropdown-divider"></li>
+            <li *ngIf="notificationList.length">
+              <hr class="dropdown-divider">
+            </li>
             <li class="mt-1" *ngFor="let notification of notificationList, index as i">
-              <a class="dropdown-item py-2" (click)="goToChat(notification.roomId)">A new notification from the form named "{{notification.roomName}}"</a>
+              <a class="dropdown-item py-2" (click)="goToChat(notification.roomId)">A new notification from the form
+                named "{{notification.roomName}}"</a>
             </li>
           </ul>
         </li>

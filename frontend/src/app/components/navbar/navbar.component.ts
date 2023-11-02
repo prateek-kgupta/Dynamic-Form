@@ -14,6 +14,7 @@ export class NavbarComponent {
   name: string = '';
   notificationList = [];
   @ViewChild('notificationDot') notificationDot: ElementRef;
+  @ViewChild('notificationDotMobile') notificationDotMobile: ElementRef
 
   constructor(
     private cookieService: CookieService,
@@ -41,17 +42,32 @@ export class NavbarComponent {
       this.socket.on('notifications').subscribe(() => {
         this.notificationList = this.socket.notifications;
         if (this.notificationDot) {
+          
           const notificationDot = this.notificationDot
             .nativeElement as HTMLElement;
-          notificationDot.style.backgroundColor = 'red';
+            this.blinkOnNotification(notificationDot)
+          // notificationDot.style.backgroundColor = 'red';
+          // notificationDot.style.padding = '0.35rem';
+          // setTimeout(() => {
+          //   notificationDot.style.backgroundColor = '#DC3545';
+          //   notificationDot.style.padding = '0.25rem';
+          // }, 500);
+        }
+        if(this.notificationDotMobile){
+          const notificationDot = this.notificationDotMobile.nativeElement as HTMLElement
+          this.blinkOnNotification(notificationDot)
+        }
+      });
+    }
+  }
+
+  blinkOnNotification(notificationDot){
+    notificationDot.style.backgroundColor = 'red';
           notificationDot.style.padding = '0.35rem';
           setTimeout(() => {
             notificationDot.style.backgroundColor = '#DC3545';
             notificationDot.style.padding = '0.25rem';
           }, 500);
-        }
-      });
-    }
   }
 
   changeLog() {

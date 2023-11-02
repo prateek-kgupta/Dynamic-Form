@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
 import { UserInfo } from 'src/app/services/user-info.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-add-editors',
@@ -20,7 +21,7 @@ export class AddEditorsComponent {
     // http request to get user from database
     // const token = this.user.token;
     
-    this.http.get(`http://localhost:3000/user/getUser/${this.searchTerm}`).subscribe(
+    this.http.get(`${environment.BACKEND_URL}/user/getUser/${this.searchTerm}`).subscribe(
       (res) => {
         console.log(res);
         this.searchResults = res

@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { UserInfo } from 'src/app/services/user-info.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-show-response',
@@ -22,7 +23,7 @@ export class ShowResponseComponent {
 
   getFormResponse(responseId = this.responseId) {
 
-    this.http.get(`http://localhost:3000/response/${responseId}`)
+    this.http.get(`${environment.BACKEND_URL}/response/${responseId}`)
     .subscribe((res)=>{
       this.responseData = res[0]['responses']
       this.formTitle = res[0]['forms'][0]['title']

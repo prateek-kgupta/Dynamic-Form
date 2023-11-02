@@ -4,6 +4,7 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SocketService } from 'src/app/services/socket.service';
 import { UserInfo } from 'src/app/services/user-info.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-generate-form',
@@ -51,7 +52,7 @@ export class GenerateFormComponent {
       );
       this.http
         .post(
-          'http://localhost:3000/form',
+          `${environment.BACKEND_URL}/form`,
           {
             form: formData,
             owner: this.user._id,

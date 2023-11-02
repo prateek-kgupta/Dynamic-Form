@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { UserInfo } from 'src/app/services/user-info.service';
+import { environment } from 'src/environments/environment';
 import * as XLSX from 'xlsx'
 
 
@@ -25,7 +26,7 @@ export class ResponseSheetComponent {
     this.loading = true
 
     this.http
-      .get(`http://localhost:3000/response/allResponses/${this.formId}`)
+      .get(`${environment.BACKEND_URL}/response/allResponses/${this.formId}`)
       .subscribe(
         (res) => {
           this.loading = false

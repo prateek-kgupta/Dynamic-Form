@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { Event, Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { UserInfo } from 'src/app/services/user-info.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-dashboard',
@@ -32,7 +33,7 @@ export class DashboardComponent {
       this.cookieService.get('token')
     );
 
-    this.http.get(`http://localhost:3000/form`).subscribe(
+    this.http.get(`${environment.BACKEND_URL}/form`).subscribe(
       (res) => {
         console.log(res);
         this.allForms = res;
@@ -57,7 +58,7 @@ export class DashboardComponent {
     // API call to get each submissions
 
     this.http
-      .get(`http://localhost:3000/response/responses/${formId}`)
+      .get(`${environment.BACKEND_URL}/response/responses/${formId}`)
       .subscribe(
         (res) => {
           console.log(res);
@@ -102,7 +103,7 @@ export class DashboardComponent {
     }
 
     this.http
-      .patch(`http://localhost:3000/form/editStatus/${formId}`, {
+      .patch(`${environment.BACKEND_URL}/form/editStatus/${formId}`, {
         status: newStatus,
       })
       .subscribe(
@@ -130,7 +131,7 @@ export class DashboardComponent {
   }
 
   deleteForm(formId) {
-    this.http.delete(`http://localhost:3000/form/delete/${formId}`).subscribe(
+    this.http.delete(`${environment.BACKEND_URL}/form/delete/${formId}`).subscribe(
       (res) => {
         if (res['message'] === 'Deleted') {
           this.formList = this.formList.filter((form) => form._id !== formId);

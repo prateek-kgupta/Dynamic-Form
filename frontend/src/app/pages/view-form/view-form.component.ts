@@ -10,6 +10,7 @@ import {
 import { NavigationEnd, Router, Event } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { UserInfo } from 'src/app/services/user-info.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-view-form',
@@ -71,7 +72,7 @@ export class ViewFormComponent {
     this.loading = true;
 
     this.http
-      .get(`http://localhost:3000/form/${formId}`)
+      .get(`${environment.BACKEND_URL}/form/${formId}`)
       .subscribe(
         // RECIEVING FORM DATA FROM BACKEND
         (res) => {
@@ -155,7 +156,7 @@ export class ViewFormComponent {
         `Bearer ${this.user.token}`
       );
       this.http
-        .post(`http://localhost:3000/response`, responseData, {
+        .post(`${environment.BACKEND_URL}/response`, responseData, {
           headers: header,
         })
         .subscribe(

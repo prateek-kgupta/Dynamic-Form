@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {  io } from 'socket.io-client';
 import { UserInfo } from './user-info.service';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,7 @@ export class SocketService {
   notifications = [];
 
   constructor(private user: UserInfo) {
-    this.socket = io('http://localhost:3000', { autoConnect: false });
+    this.socket = io(`${environment.BACKEND_URL}`, { autoConnect: false });
 
     this.socket.on(
       'newMessage',

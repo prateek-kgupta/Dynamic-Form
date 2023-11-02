@@ -3,6 +3,7 @@ import { Component, HostListener } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserInfo } from 'src/app/services/user-info.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-edit-form',
@@ -43,7 +44,7 @@ export class EditFormComponent {
         `Bearer ${this.user.token}`
       );
       this.http
-        .get(`http://localhost:3000/form/editFailed/${this.formId}`, {
+        .get(`${environment.BACKEND_URL}/form/editFailed/${this.formId}`, {
           headers: header,
         })
         .subscribe(
@@ -59,7 +60,7 @@ export class EditFormComponent {
     this.loading = true;
 
     this.http
-      .get(`http://localhost:3000/form/edit/${formId}`, )
+      .get(`${environment.BACKEND_URL}/form/edit/${formId}`, )
       .subscribe(
         // RECIEVING FORM DATA FROM BACKEND
         (res) => {
@@ -145,7 +146,7 @@ export class EditFormComponent {
 
     this.loading = true;
     this.http
-      .patch(`http://localhost:3000/form/edit/${this.formId}`, editData)
+      .patch(`${environment.BACKEND_URL}/form/edit/${this.formId}`, editData)
       .subscribe(
         (res) => {
           this.loading = false;
@@ -173,7 +174,7 @@ export class EditFormComponent {
         `Bearer ${this.user.token}`
       );
       this.http
-        .get(`http://localhost:3000/form/editFailed/${this.formId}`, {
+        .get(`${environment.BACKEND_URL}/form/editFailed/${this.formId}`, {
           headers: header,
         })
         .subscribe();

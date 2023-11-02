@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-authorization',
@@ -52,7 +53,7 @@ export class AuthorizationComponent {
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
       this.http
-        .post('http://localhost:3000/user/login', { email, password })
+        .post(`${environment.BACKEND_URL}/user/login`, { email, password })
         .subscribe(
           (res) => {
             this.setToken(res['token']);
@@ -85,7 +86,7 @@ export class AuthorizationComponent {
     ) {
       const { name, email, password } = this.signupForm.value;
       this.http
-        .post('http://localhost:3000/user/signup', { name, email, password })
+        .post(`${environment.BACKEND_URL}/user/signup`, { name, email, password })
         .subscribe(
           (res) => {
             console.log(res);
@@ -129,6 +130,6 @@ export class AuthorizationComponent {
   }
 
   googleSignIn() {
-    window.location.href = `http://localhost:3000/user/auth/google`;
+    window.location.href = `${environment.BACKEND_URL}/user/auth/google`;
   }
 }
