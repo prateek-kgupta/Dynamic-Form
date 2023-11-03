@@ -39,7 +39,7 @@
             <li *ngIf="notificationList.length">
               <hr class="dropdown-divider">
             </li>
-            <li class="mt-1" *ngFor="let notification of notificationList, index as i">
+            <li class="mt-1" *ngFor="let notification of notificationList.slice().reverse()">
               <a class="dropdown-item py-2" (click)="goToChat(notification.roomId)">A new notification from the form
                 named "{{notification.roomName}}"</a>
             </li>
