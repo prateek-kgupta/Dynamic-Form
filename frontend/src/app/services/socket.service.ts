@@ -133,7 +133,8 @@ export class SocketService {
     this.socket.emit('JoinNotifyRoom', {roomId})
   }
 
-  connect(userId) {
+  connect(userId, token) {
+    this.socket.auth = {token}
     this.socket.connect();
     this.socket.emit('getSubForms', { userId });
     this.socket.emit('getNotifications', { userId });

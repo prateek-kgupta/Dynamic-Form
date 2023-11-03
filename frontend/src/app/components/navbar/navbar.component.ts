@@ -28,7 +28,7 @@ export class NavbarComponent {
     if (this.token) {
       const payload = JSON.parse(atob(this.token.split('.')[1]));
       // Connect to the socket service
-      this.socket.connect(payload._id);
+      this.socket.connect(payload._id, this.token);
 
       this.notificationList = this.socket.notifications;
 

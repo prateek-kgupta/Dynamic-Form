@@ -48,7 +48,7 @@ export class MiddlerComponent {
     console.log(3, this.cookieService.get('token'));
     const payload = JSON.parse(atob(this.token.split('.')[1]));
     // Connect to websocket
-    this.socket.connect(payload._id)
+    this.socket.connect(payload._id, this.token)
     this.user.token = this.token;
     this.user.loggedIn = true;
     this.user['_id'] = payload._id;

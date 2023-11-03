@@ -1,13 +1,27 @@
+const socketAuth = require("../middleware/socketAuth");
 const Chat = require("../models/chat");
 const User = require("../models/users");
 const { default: mongoose } = require("mongoose");
 
 module.exports = (io) => {
+  io.use(async(socket, next) => {
+    const token = socket.handshake.auth.token
+    const isUser = await socketAuth(token)
+    if(isUser){
+      return next()
+    }
+    else{
+      return next(new Error('Authentication failed'))
+    }
+  })
+
+
   io.on("connection", (socket) => {
     console.log("New websocket connection....");
 
     //  JOIN CHAT ROOM, LEAVE NOTIFICATION ROOM
     socket.on("join", async ({ roomId, userId }) => {
+      console.log("Joining chat room")
       socket.join(roomId);
       socket.leave(`${roomId}_notify`);
       const allChats = await Chat.find({ roomId });
