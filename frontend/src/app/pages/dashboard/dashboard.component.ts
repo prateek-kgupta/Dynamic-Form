@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Event, Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
+import { SocketService } from 'src/app/services/socket.service';
 import { UserInfo } from 'src/app/services/user-info.service';
 import { environment } from 'src/environments/environment';
 
@@ -22,7 +23,8 @@ export class DashboardComponent {
     private http: HttpClient,
     private user: UserInfo,
     private router: Router,
-    private cookieService: CookieService
+    private cookieService: CookieService,
+    private socket: SocketService
   ) {}
 
   ngOnInit() {
@@ -136,6 +138,8 @@ export class DashboardComponent {
         if (res['message'] === 'Deleted') {
           this.formList = this.formList.filter((form) => form._id !== formId);
           this.allForms = this.allForms.filter((form) => form._id !== formId);
+          this.socket.notifications = this.socket.notifications.filter(socket => socket.roomId !== formId)
+          this.socket.refreshNotifications()
         }
       },
       (err) => {

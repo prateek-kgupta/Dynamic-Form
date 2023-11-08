@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import {  io } from 'socket.io-client';
 import { UserInfo } from './user-info.service';
 import { Observable } from 'rxjs';
@@ -12,6 +12,8 @@ export class SocketService {
   subscribedForms = [];
   socket;
   notifications = [];
+
+  formDeleted = new EventEmitter()
 
   constructor(private user: UserInfo) {
     this.socket = io(`${environment.BACKEND_URL}`, { autoConnect: false });
@@ -71,6 +73,10 @@ export class SocketService {
       }
       console.log(this.notifications);
     });
+  }
+
+  refreshNotifications(){
+    this.formDeleted.emit()
   }
 
   joinRoom(roomId) {

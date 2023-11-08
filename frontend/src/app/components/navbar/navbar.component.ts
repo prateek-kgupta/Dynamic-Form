@@ -38,6 +38,7 @@ export class NavbarComponent {
       this.user['_id'] = payload._id;
       this.user['name'] = payload.name;
       this.name = payload.name;
+      
       // ADD OBSERVABLE TO GET NEW NOTIFICATIONS
       this.socket.on('notifications').subscribe(() => {
         this.notificationList = this.socket.notifications;
@@ -52,6 +53,10 @@ export class NavbarComponent {
           this.blinkOnNotification(notificationDot);
         }
       });
+
+      this.socket.formDeleted.subscribe(() => {
+        this.notificationList = this.socket.notifications
+      })
     }
   }
 
